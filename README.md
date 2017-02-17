@@ -2,7 +2,7 @@ xrick
 =====
 
 xrick is a clone of [Rick Dangerous](http://en.wikipedia.org/wiki/Rick_Dangerous),
-known to run on Linux, Windows, BeOs, Amiga, QNX, all sorts of gaming consoles...
+known to run on macOS, Linux, Windows, BeOs, Amiga, QNX, all sorts of gaming consoles...
 
 License agreement & legal bable
 -------------------------------
