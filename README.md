@@ -34,7 +34,16 @@ Building
 * [SDL](https://www.libsdl.org/download-1.2.php) version 1.2.x
 * [zlib](http://www.zlib.net/)
 
-1. *Create a build directory*
+1. *Install requirements*
+
+  ```
+  $ sudo apt-get install build-essential
+  $ sudo apt-get install libsdl1.2-dev
+  $ sudo apt-get install zlib1g-dev
+  $ sudo apt-get install cmake
+  ```
+
+2. *Create a build directory*
 
   ```
   $ cd xrick-x.x.x
@@ -42,15 +51,15 @@ Building
   $ cd build
   ```
 
-2. *Generate your Makefile*
+3. *Generate your Makefile*
 
   `$ cmake ../source/xrick/projects/cmake`
 
-3. *Build*
+4. *Build*
 
   `$ make`
 
-4. *Install (optional)*
+5. *Install (optional)*
 
   `$ make install`
 
