@@ -193,7 +193,7 @@ game_run(void)
     }
 
     game_period = sysarg_args_period ? sysarg_args_period : GAME_PERIOD;
-    game_state = XRICK;
+    game_state = INIT_GAME;
 
     /* main loop */
     while (game_state != EXIT)
@@ -302,6 +302,7 @@ frame(void)
 
 
         case INIT_GAME:
+            sysvid_setGamePalette();
             init();
             game_state = INTRO_MAIN;
             break;
