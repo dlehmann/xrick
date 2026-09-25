@@ -93,7 +93,7 @@ static void sdl_callback(void *userdata/*unused*/, U8 *stream, int len)
                     if (channel[c].loop > 0) channel[c].loop--;
                     if (channel[c].loop)
                     {  /* just loop */
-                        IFDEBUG_AUDIO2(sys_printf("xrick/audio: channel %d - loop\n", c););
+                        IFDEBUG_AUDIO2(sys_printf("xrick/audio: channel %d - loop\n", (int)c););
                         channel[c].buf = channel[c].snd->buf;
                         channel[c].len = channel[c].snd->len;
                         s += ADJVOL(*channel[c].buf - 0x80);
@@ -102,7 +102,7 @@ static void sdl_callback(void *userdata/*unused*/, U8 *stream, int len)
                     }
                     else
                     {  /* end for real */
-                        IFDEBUG_AUDIO2(sys_printf("xrick/audio: channel %d - end\n", c););
+                        IFDEBUG_AUDIO2(sys_printf("xrick/audio: channel %d - end\n", (int)c););
                         endChannel(c);
                     }
                 }

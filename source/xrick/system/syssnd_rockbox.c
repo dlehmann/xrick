@@ -201,14 +201,14 @@ void syssnd_update(void)
                 if (channel->loop)
                 {
                     /* just loop */
-                    IFDEBUG_AUDIO2(sys_printf("xrick/audio: channel %d - loop\n", c););
+                    IFDEBUG_AUDIO2(sys_printf("xrick/audio: channel %d - loop\n", (int)c););
                     channel->buf = channel->sound->buf;
                     channel->len = channel->sound->len;
                 }
                 else
                 {
                     /* end for real */
-                    IFDEBUG_AUDIO2(sys_printf("xrick/audio: channel %d - end\n", c););
+                    IFDEBUG_AUDIO2(sys_printf("xrick/audio: channel %d - end\n", (int)c););
                     endChannel(c);
                 }
             }
@@ -342,11 +342,11 @@ void syssnd_play(sound_t *sound, S8 loop)
         if (channels[c].sound == sound)
         {
             sys_printf("xrick/audio: already playing %s on channel %d - resetting\n",
-                sound->name, c);
+                sound->name, (int)c);
         }
         else
         {
-            sys_printf("xrick/audio: playing %s on channel %d\n", sound->name, c);
+            sys_printf("xrick/audio: playing %s on channel %d\n", sound->name, (int)c);
         }
     );
 
@@ -433,7 +433,7 @@ void syssnd_load(sound_t *sound)
         sound->buf = sysmem_push(sound->len);
         if (!sound->buf)
         {
-            sys_error("(audio) not enough memory for \"%s\", %d bytes needed", sound->name, sound->len);
+            sys_error("(audio) not enough memory for \"%s\", %lu bytes needed", sound->name, (unsigned long)sound->len);
             break;
         }
 

@@ -86,7 +86,7 @@ void sysmem_shutdown(void)
     }
 
     IFDEBUG_MEMORY(
-        sys_printf("xrick/memory: max memory usage was %u bytes\n", maxUsedMemory);
+        sys_printf("xrick/memory: max memory usage was %lu bytes\n", (unsigned long)maxUsedMemory);
     );
 
     isMemoryInitialised = false;
@@ -116,7 +116,7 @@ void *sysmem_push(size_t size)
     stackSize += neededSize;
 
     IFDEBUG_MEMORY(
-        sys_printf("xrick/memory: allocated %u bytes\n", neededSize);
+        sys_printf("xrick/memory: allocated %lu bytes\n", (unsigned long)neededSize);
         if (stackSize > maxUsedMemory) maxUsedMemory = stackSize;
     );
 
@@ -154,7 +154,7 @@ void sysmem_pop(void * alignedPtr)
     );
 
     IFDEBUG_MEMORY(
-        sys_printf("xrick/memory: released %u bytes\n", allocatedSize);
+        sys_printf("xrick/memory: released %lu bytes\n", (unsigned long)allocatedSize);
     );
 }
 

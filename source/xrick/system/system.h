@@ -68,9 +68,22 @@
  */
 extern bool sys_init(int, char **);  /* initialize all sections */
 extern void sys_shutdown(void);
-extern void sys_error(const char *, ...);   /* report an error */
-extern void sys_printf(const char *, ...);  /* print to the console */
-extern void sys_snprintf(char *, size_t, const char *, ...);
+/*
+ * let GCC and clang check the arguments against the format string, as
+ * for printf
+ */
+#if defined(__GNUC__) || defined(__clang__)
+#  define SYS_PRINTF_FORMAT(fmt, args) __attribute__((format(printf, fmt, args)))
+#else
+#  define SYS_PRINTF_FORMAT(fmt, args)
+#endif
+
+extern void sys_error(const char *, ...)   /* report an error */
+    SYS_PRINTF_FORMAT(1, 2);
+extern void sys_printf(const char *, ...)  /* print to the console */
+    SYS_PRINTF_FORMAT(1, 2);
+extern void sys_snprintf(char *, size_t, const char *, ...)
+    SYS_PRINTF_FORMAT(3, 4);
 extern size_t sys_strlen(const char *);
 extern U32 sys_gettime(void);  /* milliseconds since some fixed time */
 extern void sys_yield(void);   /* let other tasks run a little */
