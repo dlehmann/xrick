@@ -63,7 +63,7 @@ Building
 
   `$ make install`
 
-Platform specific notes can be found in README.platforms.
+Notes for the Rockbox version can be found in `assets/docs/README.rockbox`.
 
 Usage
 -----
@@ -117,8 +117,10 @@ Controls
 - left, right, up (jump) or down (crawl): arrow keys or Z, X, O and K.
 - fire: SPACE, end: E, pause: P, exit: ESC.
 - insert coin (with `--coins` only): C.
-- use left, right, up, down + fire to poke something with your stick,
-  lay a stick of dynamite, or fire a bullet.
+- hold fire and push left or right to poke something with your stick, up
+  to fire a bullet, or down to lay a stick of dynamite.
+- other keys for left, right, up, down and fire: `--keys`, with the key
+  names from `assets/docs/KeyCodes`.
 - toggle fullscreen: F1 ; zoom in/out: F2, F3.
 - mute: F4 ; volume up/down: F5, F6.
 - cheat modes, "trainer": F7 ; "never die": F8 ; "expose": F9.
