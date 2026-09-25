@@ -70,6 +70,11 @@ Usage
 
 `xrick --help` will tell you all about command-line options.
 
+High scores are saved to `highscores.txt` in the directory where xrick is
+run from. The file is created empty on first start and can be edited by
+hand: one entry per line as `SCORE NAME`, names up to 10 characters (A-Z,
+0-9, `.` and spaces). Delete the file to reset the high scores.
+
 Controls
 --------
 

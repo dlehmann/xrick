@@ -26,6 +26,7 @@
 #include "xrick/scroller.h"
 #include "xrick/control.h"
 #include "xrick/resources.h"
+#include "xrick/hiscores.h"
 
 #ifdef ENABLE_DEVTOOLS
 #include "xrick/devtools.h"
@@ -185,6 +186,8 @@ game_run(void)
         resources_unload();
         return;
     }
+
+    hiscores_load();
 
     if (!sys_cacheData())
     {

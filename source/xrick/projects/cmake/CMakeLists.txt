@@ -105,6 +105,7 @@ option(DEBUG_AUDIO2 "Enable extra audio debugging support" OFF)
 option(DEBUG_VIDEO "Enable video debugging support" OFF)
 option(DEBUG_VIDEO2 "Enable extra video debugging support" OFF)
 option(ENABLE_ZIP "Enable compressed archive support" ON)
+option(ENABLE_HISCORE_FILE "Keep high scores in an editable text file" ON)
 
 configure_file(${PROJECT_ROOT_DIR}/source/xrick/projects/cmake/config.h.in 
                ${PROJECT_ROOT_DIR}/source/xrick/config.h)
@@ -139,6 +140,8 @@ set(SOURCES
     ${PROJECT_ROOT_DIR}/source/xrick/ents.h
     ${PROJECT_ROOT_DIR}/source/xrick/game.c
     ${PROJECT_ROOT_DIR}/source/xrick/game.h
+    ${PROJECT_ROOT_DIR}/source/xrick/hiscores.c
+    ${PROJECT_ROOT_DIR}/source/xrick/hiscores.h
     ${PROJECT_ROOT_DIR}/source/xrick/maps.c
     ${PROJECT_ROOT_DIR}/source/xrick/maps.h
     ${PROJECT_ROOT_DIR}/source/xrick/rects.c

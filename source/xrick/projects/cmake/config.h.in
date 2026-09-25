@@ -54,6 +54,9 @@
 /* compressed archive support*/
 #cmakedefine ENABLE_ZIP
 
+/* high scores text file support */
+#cmakedefine ENABLE_HISCORE_FILE
+
 #endif /* ndef XRICK_CONFIG_H */
 
 /* eof */

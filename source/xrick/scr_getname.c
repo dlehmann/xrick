@@ -16,6 +16,7 @@
 #include "xrick/screens.h"
 
 #include "xrick/game.h"
+#include "xrick/hiscores.h"
 #include "xrick/draw.h"
 #include "xrick/control.h"
 #include "xrick/data/pics.h"
@@ -59,7 +60,8 @@ screen_getname(void)
     if (seq == 0)
     {
         /* figure out if this is a high score */
-        if (game_score < screen_highScores[screen_nbr_hiscores - 1].score)
+        if (game_score == 0 ||
+            game_score < screen_highScores[screen_nbr_hiscores - 1].score)
             return SCREEN_DONE;
 
         /* prepare */
@@ -182,6 +184,7 @@ screen_getname(void)
                     {
                         screen_highScores[i].name[x] = player_name[x];
                     }
+                    hiscores_save();
                     seq = 99;
                 }
                 else
