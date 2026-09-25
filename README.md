@@ -166,7 +166,7 @@ refill them, and so do starting a new world and losing a life. You have
 | F9                      | cheat "expose": show hidden entities, also behind walls  |
 
 The cheats only work while playing and are shown as T, N and V at the
-top left of the screen. Z X O K and SPACE can be changed, see
+top left of the screen. Z X O K, SPACE, P, E and C can be changed, see
 [Changing the keys](#changing-the-keys).
 
 With a joystick (build option `ENABLE_JOYSTICK`), the stick moves and any
@@ -214,9 +214,9 @@ world 3, 39-47 world 4), so `--submap` overrides `--map`; the first
 submap of a world (1, 10, 21, 39) is the same as `--map`. Mostly useful to
 test a particular place of a map.
 
-**`--keys <left>-<right>-<up>-<down>-<fire>`**
+**`--keys <left>-<right>-<up>-<down>-<fire>[-<pause>[-<end>[-<coin>]]]`**
 
-Change the keys for the five game controls, see
+Change the keys for the game controls, pause, end and coin, see
 [Changing the keys](#changing-the-keys) below.
 
 **`--data <archive>`**
@@ -252,15 +252,31 @@ missing or out of range, as do unknown options.
 
 ### Changing the keys
 
-`--keys` sets the keys for left, right, up (jump, climb), down (crawl,
-climb down) and fire, in this order, as key names separated by `-`:
+`--keys` sets the keys as key names separated by `-`, in this order:
 
 ```
-$ xrick --keys <left>-<right>-<up>-<down>-<fire>
+$ xrick --keys <left>-<right>-<up>-<down>-<fire>[-<pause>[-<end>[-<coin>]]]
 ```
 
-All five keys must be given. The default is `z-x-o-k-SPACE`. The arrow
-keys always work for the four directions as well, whatever `--keys` says.
+| Position | Control                                  | Default |
+|----------|------------------------------------------|---------|
+| 1        | left                                     | `z`     |
+| 2        | right                                    | `x`     |
+| 3        | up (jump, climb)                         | `o`     |
+| 4        | down (crawl, climb down)                 | `k`     |
+| 5        | fire                                     | `SPACE` |
+| 6        | pause (optional)                         | `p`     |
+| 7        | end the game (optional)                  | `e`     |
+| 8        | insert a coin, with `--coins` (optional) | `c`     |
+
+The first five keys must always be given; pause, end and coin are
+optional, but only from the left: to change the coin key, give pause and
+end too (repeat their defaults, `p` and `e`, to keep them). Keys that are
+not given keep their default, so the full default is
+`z-x-o-k-SPACE-p-e-c`. The arrow keys always work for the four directions
+as well, whatever `--keys` says. If `--keys` is invalid (an unknown key
+name, fewer than 5 or more than 8 keys, an empty name), xrick exits with
+"invalid key codes" and changes nothing.
 
 Key names are not case sensitive (`a` and `A` are the same key).
 `assets/docs/KeyCodes` lists them all; the most useful ones are:
@@ -278,21 +294,29 @@ Key names are not case sensitive (`a` and `A` are the same key).
 Examples:
 
 ```
-$ xrick --keys a-d-w-s-SPACE              # WASD, fire with space
-$ xrick --keys LEFT-RIGHT-UP-DOWN-LCTRL   # arrow keys, fire with left ctrl
-$ xrick --keys KP4-KP6-KP8-KP2-KP0        # numeric keypad
+$ xrick --keys a-d-w-s-SPACE                   # WASD, fire with space
+$ xrick --keys LEFT-RIGHT-UP-DOWN-LCTRL        # arrow keys, fire with left ctrl
+$ xrick --keys KP4-KP6-KP8-KP2-KP0-KP_ENTER    # keypad, pause with keypad enter
+$ xrick --keys z-x-o-k-SPACE-p-e-INSERT        # defaults, coin with insert
 ```
 
 Arcade controllers usually send keys: many USB encoders are set up like
-MAME, with the stick on the arrow keys and the first buttons on `LCTRL`,
-`LALT` and `SPACE`. For such a stick and fire on the first button, use
-`--keys LEFT-RIGHT-UP-DOWN-LCTRL`. If you do not know which keys your
-encoder sends, try a key tester (e.g. `xev` on Linux) first.
+MAME, with the stick on the arrow keys, the first buttons on `LCTRL`,
+`LALT` and `SPACE`, the start button on `1` and the coin button on `5`.
+For such a controller, with fire on the first button, pause on start, end
+on the second player's start button (`2`) and the coin button, use:
 
-The other keys can not be changed yet: P pause, E end the game, ESC quit,
-C insert a coin, the function keys F1 to F9, and A and B. Do not give
-`--keys` one of these keys: xrick then only does one of the two actions
-(e.g. with `E` as fire, E still ends the game and never fires).
+```
+$ xrick --keys LEFT-RIGHT-UP-DOWN-LCTRL-1-2-5
+```
+
+If you do not know which keys your encoder sends, try a key tester (e.g.
+`xev` on Linux) first.
+
+The other keys can not be changed: ESC quit, the function keys F1 to F9,
+and A and B. Give every action its own key: if two actions share a key,
+xrick only does one of them (e.g. with `ESCAPE` as fire, ESC still quits
+and never fires).
 
 Data directory
 --------------
@@ -438,7 +462,7 @@ coin.
 
 - The start screen shows a blinking INSERT COIN while there are no coins,
   else the number of coins left (CREDITS 2).
-- C inserts a coin, up to 99. A coin inserted on the start screen starts a
+- C (or the coin key set with `--keys`) inserts a coin, up to 99. A coin inserted on the start screen starts a
   game right away; with coins inserted before, fire starts a game.
 - Each game uses one coin and gives the usual 6 lives. Coins inserted while
   playing are kept for the next games.
@@ -446,13 +470,15 @@ coin.
 - Coins are not saved: they are lost when xrick exits.
 
 For an arcade cabinet, combine it with `--fullscreen`, and with `--keys`
-for the stick and fire button, e.g.:
+for the stick, the fire button and the coin button (the eighth key, see
+[Changing the keys](#changing-the-keys)), e.g.:
 
 ```
-$ xrick --coins --fullscreen --keys LEFT-RIGHT-UP-DOWN-LCTRL
+$ xrick --coins --fullscreen --keys LEFT-RIGHT-UP-DOWN-LCTRL-1-2-5
 ```
 
-Keep in mind that ESC quits xrick at once, and E ends the current game.
+Keep in mind that ESC quits xrick at once, and the end key (E by default)
+ends the current game.
 
 Release History
 ---------------

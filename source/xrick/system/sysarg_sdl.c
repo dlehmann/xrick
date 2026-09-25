@@ -118,16 +118,18 @@ static void sysarg_help(void)
     /* TODO: remove hardcoded map/submap max counts because they are now loaded from resource files */
     sys_printf(
         "Keys:\n"
-        "  --keys <left>-<right>-<up>-<down>-<fire>\n"
-        "                     Keys for the five game controls, as key names\n"
-        "                     (see assets/docs/KeyCodes), not case sensitive.\n"
-        "                     The default is z-x-o-k-SPACE. Examples:\n"
+        "  --keys <left>-<right>-<up>-<down>-<fire>[-<pause>[-<end>[-<coin>]]]\n"
+        "                     Keys for the game controls, as key names (see\n"
+        "                     assets/docs/KeyCodes), not case sensitive. The\n"
+        "                     first five are needed; pause, end (end the\n"
+        "                     game) and coin (insert a coin) are optional.\n"
+        "                     The default is z-x-o-k-SPACE-p-e-c. Examples:\n"
         "                       --keys a-d-w-s-SPACE\n"
-        "                       --keys LEFT-RIGHT-UP-DOWN-LCTRL\n"
-        "                       --keys KP4-KP6-KP8-KP2-KP0\n"
+        "                       --keys LEFT-RIGHT-UP-DOWN-LCTRL-1-2-5\n"
+        "                       --keys KP4-KP6-KP8-KP2-KP0-KP_ENTER\n"
         "                     The arrow keys always work too. Fixed keys:\n"
-        "                     P pause, E end game, ESC quit, C coin, F1-F3\n"
-        "                     display, F4-F6 sound, F7-F9 cheats.\n"
+        "                     ESC quit, F1-F3 display, F4-F6 sound, F7-F9\n"
+        "                     cheats.\n"
         "\n");
     sys_printf(
         "Data and files:\n"
@@ -190,53 +192,43 @@ static int sysarg_sdlcode(char *k)
 }
 
 /*
- * Scan key codes sequence: <left>-<right>-<up>-<down>-<fire> key names,
- * and set the syskbd_xxx key codes
+ * Scan key codes sequence: key names separated by '-', for
+ * <left>-<right>-<up>-<down>-<fire>[-<pause>[-<end>[-<coin>]]], and set
+ * the syskbd_xxx key codes. The last three are optional, keys not given
+ * keep their default.
  *
  * return: false if the sequence is invalid
  */
 static bool sysarg_scankeys(const char *keys)
 {
+  enum { KEYS_MIN = 5, KEYS_MAX = 8 };
+  U16 *targets[KEYS_MAX] = {
+    &syskbd_left, &syskbd_right, &syskbd_up, &syskbd_down, &syskbd_fire,
+    &syskbd_pause, &syskbd_end, &syskbd_coin
+  };
+  U16 codes[KEYS_MAX];
   char k[16];
-  int i, j;
+  int i, j, n;
 
   i = 0;
+  for (n = 0; n < KEYS_MAX; n++) {
+    j = 0;
+    while (keys[i] != '\0' && keys[i] != '-') {
+      if (j + 1 >= (int)sizeof k) return false;  /* name too long */
+      k[j++] = keys[i++];
+    }
+    k[j] = '\0';
+    codes[n] = (U16)sysarg_sdlcode(k);
+    if (!codes[n]) return false;  /* unknown key name */
+    if (keys[i] == '\0') break;  /* last key */
+    i++;  /* skip '-' */
+  }
+  if (n == KEYS_MAX) return false;  /* too many keys */
+  if (++n < KEYS_MIN) return false;  /* not enough keys */
 
-  j = 0;
-  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < (int)sizeof k) k[j++] = keys[i++];
-  if (keys[i++] == '\0') return false;
-  k[j] = '\0';
-  syskbd_left = sysarg_sdlcode(k);
-  if (!syskbd_left) return false;
-
-  j = 0;
-  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < (int)sizeof k) k[j++] = keys[i++];
-  if (keys[i++] == '\0') return false;
-  k[j] = '\0';
-  syskbd_right = sysarg_sdlcode(k);
-  if (!syskbd_right) return false;
-
-  j = 0;
-  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < (int)sizeof k) k[j++] = keys[i++];
-  if (keys[i++] == '\0') return false;
-  k[j] = '\0';
-  syskbd_up = sysarg_sdlcode(k);
-  if (!syskbd_up) return false;
-
-  j = 0;
-  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < (int)sizeof k) k[j++] = keys[i++];
-  if (keys[i++] == '\0') return false;
-  k[j] = '\0';
-  syskbd_down = sysarg_sdlcode(k);
-  if (!syskbd_down) return false;
-
-  j = 0;
-  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < (int)sizeof k) k[j++] = keys[i++];
-  if (keys[i] != '\0') return false;
-  k[j] = '\0';
-  syskbd_fire = sysarg_sdlcode(k);
-  if (!syskbd_fire) return false;
-
+  /* all fine: set the keys given */
+  for (j = 0; j < n; j++)
+    *targets[j] = codes[j];
   return true;
 }
 

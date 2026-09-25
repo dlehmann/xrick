@@ -19,7 +19,7 @@
 
 /*
  * Global variables: key codes of the controls, SDL version. The arrow
- * keys work too, see sysevt_sdl.c; --keys changes the first five. SDL
+ * keys work too, see sysevt_sdl.c; --keys changes all but xtra, b and a. SDL
  * key codes go up to SDLK_LAST (323), hence U16.
  */
 U16 syskbd_up = SDLK_o;
