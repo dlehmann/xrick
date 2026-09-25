@@ -7,8 +7,9 @@ source/xrick/config.h
 # Files required to run the game
 game/*
 
-# Do track data archive in game folder though
+# Do track data archive and language files in game folder though
 !game/data.zip
+!game/lang/
 
 # OS generated files #
 ######################

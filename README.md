@@ -75,6 +75,12 @@ run from. The file is created empty on first start and can be edited by
 hand: one entry per line as `SCORE NAME`, names up to 10 characters (A-Z,
 0-9, `.` and spaces). Delete the file to reset the high scores.
 
+The in-game texts (map intros, game over, pause, name entry) are read from
+`lang/en.txt` in the directory where xrick is run from. `xrick --lang de`
+uses `lang/de.txt` instead. To add a language, copy `en.txt` to
+`lang/<code>.txt`, translate it and start xrick with `--lang <code>`; the
+file itself describes the format.
+
 Controls
 --------
 

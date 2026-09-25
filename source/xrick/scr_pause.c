@@ -14,6 +14,7 @@
  */
 
 #include "xrick/screens.h"
+#include "xrick/lang.h"
 
 #include "xrick/game.h"
 #include "xrick/draw.h"
@@ -28,7 +29,7 @@ screen_pause(bool pause)
 {
   if (pause) {
     draw_tilesBank = 0;
-    draw_tllst = screen_pausedtxt;
+    draw_tllst = LANG_TEXT(lang_pausedtxt, screen_pausedtxt);
     draw_setfb(120, 80);
 #ifdef GFXPC
     draw_filter = 0xAAAA;

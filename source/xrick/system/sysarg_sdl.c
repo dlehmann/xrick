@@ -51,6 +51,9 @@ int sysarg_args_zoom = 0;
 bool sysarg_args_nosound = false;
 int sysarg_args_vol = 0;
 const char *sysarg_args_data = NULL;
+#ifdef ENABLE_LANG_FILE
+const char *sysarg_args_lang = NULL;
+#endif /* ENABLE_LANG_FILE */
 
 /*
  * Version info
@@ -108,6 +111,12 @@ static void sysarg_help(void)
        "                     and %d (max). The default is to play sounds\n"
        "                     at maximum volume (%d).\n"
 #endif /* ENABLE_SOUND */
+#ifdef ENABLE_LANG_FILE
+       "  --lang <lang>      Show the in-game texts in language <lang>,\n"
+       "                     read from lang/<lang>.txt in the directory\n"
+       "                     where xrick is run from, e.g. \"--lang de\".\n"
+       "                     The default is \"en\".\n"
+#endif /* ENABLE_LANG_FILE */
        "  --version          Print version information.\n\n",
        GAME_PERIOD, SYSVID_MAXZOOM, SYSVID_MAXZOOM, SYSVID_ZOOM, 5/*MAP_NBR_MAPS*/-1, 47/*MAP_NBR_SUBMAPS*/
 #ifdef ENABLE_SOUND
@@ -314,6 +323,17 @@ sysarg_init(int argc, char **argv)
             }
             sysarg_args_data = argv[i];
         }
+#ifdef ENABLE_LANG_FILE
+        else if (!strcmp(argv[i], "--lang"))
+        {
+            if (++i == argc)
+            {
+                sysarg_fail("missing language");
+                return false;
+            }
+            sysarg_args_lang = argv[i];
+        }
+#endif /* ENABLE_LANG_FILE */
         else if (!strcmp(argv[i], "--version"))
         {
             sysarg_version();

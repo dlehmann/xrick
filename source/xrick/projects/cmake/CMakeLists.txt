@@ -106,6 +106,7 @@ option(DEBUG_VIDEO "Enable video debugging support" OFF)
 option(DEBUG_VIDEO2 "Enable extra video debugging support" OFF)
 option(ENABLE_ZIP "Enable compressed archive support" ON)
 option(ENABLE_HISCORE_FILE "Keep high scores in an editable text file" ON)
+option(ENABLE_LANG_FILE "Enable language files for the in-game texts" ON)
 
 configure_file(${PROJECT_ROOT_DIR}/source/xrick/projects/cmake/config.h.in 
                ${PROJECT_ROOT_DIR}/source/xrick/config.h)
@@ -142,6 +143,8 @@ set(SOURCES
     ${PROJECT_ROOT_DIR}/source/xrick/game.h
     ${PROJECT_ROOT_DIR}/source/xrick/hiscores.c
     ${PROJECT_ROOT_DIR}/source/xrick/hiscores.h
+    ${PROJECT_ROOT_DIR}/source/xrick/lang.c
+    ${PROJECT_ROOT_DIR}/source/xrick/lang.h
     ${PROJECT_ROOT_DIR}/source/xrick/maps.c
     ${PROJECT_ROOT_DIR}/source/xrick/maps.h
     ${PROJECT_ROOT_DIR}/source/xrick/rects.c
@@ -285,6 +288,9 @@ else()
 endif()
 set(INSTALL_DATA_DIR "${DEFAULT_INSTALL_DATA_DIR}" CACHE PATH "Installation directory for game data")
 install(FILES ${PROJECT_ROOT_DIR}/game/data.zip DESTINATION "${INSTALL_DATA_DIR}")
+if (ENABLE_LANG_FILE)
+    install(DIRECTORY ${PROJECT_ROOT_DIR}/game/lang DESTINATION "${INSTALL_DATA_DIR}")
+endif()
 install(FILES ${PROJECT_ROOT_DIR}/README.md DESTINATION "${INSTALL_DATA_DIR}")
 
 if(UNIX)

@@ -17,6 +17,7 @@
 
 #include "xrick/game.h"
 #include "xrick/hiscores.h"
+#include "xrick/lang.h"
 #include "xrick/draw.h"
 #include "xrick/control.h"
 #include "xrick/data/pics.h"
@@ -91,11 +92,21 @@ screen_getname(void)
 #ifdef GFXST
             draw_pic(pic_congrats);
 #endif
-            draw_setfb(72, 40);
 #ifdef GFXPC
             draw_filter = 0xffff; /* yellow */
 #endif
-            draw_tilesListImm((U8 *)"PLEASE@ENTER@YOUR@NAME\376");
+#ifdef ENABLE_LANG_FILE
+            if (lang_getnametxt)
+            {
+                draw_setfb(40, 40);  /* centered over 30 tiles */
+                draw_tilesListImm(lang_getnametxt);
+            }
+            else
+#endif /* ENABLE_LANG_FILE */
+            {
+                draw_setfb(72, 40);
+                draw_tilesListImm((U8 *)"PLEASE@ENTER@YOUR@NAME\376");
+            }
 #ifdef GFXPC
             draw_filter = 0x5555; /* green */
 #endif

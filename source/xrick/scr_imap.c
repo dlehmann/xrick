@@ -14,6 +14,7 @@
  */
 
 #include "xrick/screens.h"
+#include "xrick/lang.h"
 
 #include "xrick/game.h"
 #include "xrick/rects.h"
@@ -68,7 +69,7 @@ screen_introMap(void)
 #ifdef GFXST
     draw_tilesBank = 0;
 #endif
-    draw_tllst = screen_imaptext[game_map];
+    draw_tllst = LANG_TEXT(lang_imaptext[game_map], screen_imaptext[game_map]);
     draw_setfb(40, 16);
     draw_tilesSubList();
 

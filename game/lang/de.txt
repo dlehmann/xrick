@@ -1,0 +1,81 @@
+# xrick language file: German (start xrick with "--lang de")
+#
+# See en.txt for the format. Umlauts are written as AE, OE, UE and SS by
+# the game, so count them as two characters.
+
+[intro1]
+Südamerika 1945
+Rick Dangerous stürzt bei der
+Suche nach dem verschollenen
+Stamm der Goolus mit seinem
+Flugzeug am Amazonas ab.
+
+Doch wie das Schicksal so
+spielt, landet er mitten in
+einer Horde wilder Goolus.
+
+Kann Rick den wütenden
+Amazonaskriegern entkommen?
+
+[intro2]
+Ägypten, einige Zeit später
+Im Auftrag Londons reist Rick
+zu den Pyramiden.
+
+Er soll das Juwel von Ankhel
+zurückholen. Fanatiker haben
+es gestohlen und drohen, es zu
+zerschlagen, falls kein
+Lösegeld gezahlt wird.
+
+Kann Rick das Juwel retten,
+oder gibt es nur Scherben?
+
+[intro3]
+Europa, später in der Woche
+Rick erhält eine Nachricht
+vom britischen Geheimdienst.
+Er soll alliierte Gefangene
+aus dem berüchtigten Schloss
+Schwarzendumpf befreien.
+
+Rick nimmt den Auftrag an.
+
+Doch kann er die grausam
+gefangenen Kommandos befreien?
+
+[intro4]
+Europa, noch später
+Von den Gefangenen erfährt
+Rick, dass der Feind von
+seiner geheimen Raketenbasis
+aus London angreifen will.
+
+Ohne zu zögern beschließt
+er, in die Basis einzudringen.
+
+Kann Rick London rechtzeitig
+retten?
+
+[intro5]
+London, viel, viel später
+Rick wird als Held empfangen,
+denn er hat den Alliierten
+zum Sieg verholfen.
+
+Doch im Weltall steht die
+riesige Sternenflotte des
+barfianischen Imperiums
+bereit, die Erde zu erobern.
+
+Was wird Rick als Nächstes
+tun ...?
+
+[gameover]
+Spiel vorbei
+
+[paused]
+Pause
+
+[entername]
+Bitte Namen eingeben

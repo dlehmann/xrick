@@ -57,6 +57,9 @@
 /* high scores text file support */
 #cmakedefine ENABLE_HISCORE_FILE
 
+/* language file support */
+#cmakedefine ENABLE_LANG_FILE
+
 #endif /* ndef XRICK_CONFIG_H */
 
 /* eof */

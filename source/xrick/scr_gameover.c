@@ -14,6 +14,7 @@
  */
 
 #include "xrick/screens.h"
+#include "xrick/lang.h"
 
 #include "xrick/game.h"
 #include "xrick/draw.h"
@@ -49,7 +50,7 @@ screen_gameover(void)
         sysvid_clear();
         tm = sys_gettime();
 #endif
-        draw_tllst = screen_gameovertxt;
+        draw_tllst = LANG_TEXT(lang_gameovertxt, screen_gameovertxt);
         draw_setfb(120, 80);
 #ifdef GFXPC
         draw_filter = 0xAAAA;

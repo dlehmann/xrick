@@ -27,6 +27,7 @@
 #include "xrick/control.h"
 #include "xrick/resources.h"
 #include "xrick/hiscores.h"
+#include "xrick/lang.h"
 
 #ifdef ENABLE_DEVTOOLS
 #include "xrick/devtools.h"
@@ -188,6 +189,19 @@ game_run(void)
     }
 
     hiscores_load();
+
+#ifdef ENABLE_LANG_FILE
+    if (!lang_load(sysarg_args_lang ? sysarg_args_lang : LANG_DEFAULT))
+    {
+        if (sysarg_args_lang)
+        {
+            sys_error("(lang) can not load language \"%s\"", sysarg_args_lang);
+            resources_unload();
+            return;
+        }
+        /* no default language file: keep the texts from the archive */
+    }
+#endif /* ENABLE_LANG_FILE */
 
     if (!sys_cacheData())
     {

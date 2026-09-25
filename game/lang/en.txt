@@ -1,0 +1,88 @@
+# xrick language file: English (default, template for new languages)
+#
+# Copy this file to lang/<code>.txt, translate it and start xrick with
+# "--lang <code>". Lines starting with # are comments, missing sections
+# keep the original texts.
+#
+# The game font only has A-Z, 0-9, blanks and the marks , . ? so lower case is
+# upper cased, umlauts become AE OE UE SS, other characters become blanks.
+# Lines are centered by the game.
+#
+# [intro1]..[intro5]: map intro texts. The first line is the title, then up
+# to 11 lines of at most 30 characters (empty lines allowed).
+# [gameover], [paused]: one line, at most 23 characters.
+# [entername]: one line, at most 30 characters.
+
+[intro1]
+SOUTH AMERICA  1945
+RICK DANGEROUS CRASH LANDS HIS
+PLANE OVER THE AMAZON WHILE
+SEARCHING FOR THE LOST GOOLU
+TRIBE.
+
+BUT, BY A TERRIBLE TWIST OF
+FATE HE LANDS IN THE MIDDLE OF
+A BUNCH OF WILD GOOLUS.
+
+CAN RICK ESCAPE THESE ANGRY
+AMAZONIAN ANTAGONISTS?
+
+[intro2]
+EGYPT, SOMETIME LATER
+RICK HEADS FOR THE PYRAMIDS AT
+THE REQUEST OF LONDON.
+
+HE IS TO RECOVER THE JEWEL OF
+ANKHEL THAT HAS BEEN STOLEN BY
+FANATICS WHO THREATEN TO SMASH
+IT, IF A RANSOM IS NOT PAID.
+
+CAN RICK SAVE THE GEM, OR WILL
+HE JUST GET A BROKEN ANKHEL ?
+
+[intro3]
+EUROPE, LATER THAT WEEK
+RICK RECEIVES A COMMUNIQUE
+FROM BRITISH INTELLIGENCE
+ASKING HIM TO RESCUE ALLIED
+PRISONERS FROM THE NOTORIOUS
+SCHWARZENDUMPF CASTLE.
+
+RICK ACCEPTS THE MISSION.
+
+BUT CAN HE LIBERATE THE
+CRUELLY CAPTURED COMMANDOS ?
+
+[intro4]
+EUROPE, EVEN LATER
+RICK LEARNS FROM THE PRISONERS
+THAT THE ENEMY ARE TO LAUNCH
+AN ATTACK ON LONDON FROM THEIR
+SECRET MISSILE BASE.
+
+WITHOUT HESITATION, HE DECIDES
+TO INFILTRATE THE BASE.
+
+CAN RICK SAVE LONDON IN TIME ?
+
+[intro5]
+LONDON, MUCH, MUCH LATER
+RICK RETURNS TO A TRIUMPHANT
+WELCOME HOME HAVING HELPED
+SECURE ALLIED VICTORY.
+
+BUT, MEANWHILE, IN SPACE, THE
+MASSED STARSHIPS OF THE
+BARFIAN EMPIRE ARE POISED
+TO INVADE THE EARTH.
+
+WHAT WILL RICK DO NEXT ... ?
+
+[gameover]
+GAME OVER
+
+[paused]
+PAUSED
+
+[entername]
+PLEASE ENTER YOUR NAME
