@@ -151,6 +151,21 @@ map_eflg_expand(U8 offs)
     j = map_eflg_c[offs + i++];
     while (j--) map_eflg[k++] = map_eflg_c[offs + i];
   }
+
+  /*
+   * Wooden beams of page 0 (posts, bridges, braces, stakes) are
+   * foreground tiles in the ST data, hiding entities behind them. In the
+   * Amiga version entities walk in front of them, so clear the flag.
+   */
+  if (offs == 0) {
+    static const U8 beams[][2] = {  /* inclusive tile ranges */
+      { 0x5b, 0x5c }, { 0x5e, 0x5e }, { 0x66, 0x67 }, { 0xa0, 0xa0 },
+      { 0xad, 0xbb }, { 0xbe, 0xc7 }
+    };
+    for (i = 0; i < sizeof(beams) / sizeof(beams[0]); i++)
+      for (k = beams[i][0]; k <= beams[i][1]; k++)
+        map_eflg[k] &= ~MAP_EFLG_FGND;
+  }
 }
 
 
