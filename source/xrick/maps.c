@@ -174,7 +174,9 @@ map_eflg_expand(U8 offs)
       { 0, 0x85, 0x90 },  /* stone pillars (South America) */
       { 0, 0x91, 0x9c },  /* columns with capitals (Egypt) */
       { 1, 0x79, 0x7c },  /* stone pillars (castle) */
-      { 1, 0xbe, 0xbf }   /* wooden posts (castle) */
+      { 1, 0xbe, 0xbf },  /* wooden posts (castle) */
+      { 1, 0x6f, 0x74 },  /* wooden crates (castle) */
+      { 1, 0xd2, 0xd5 }   /* wooden platforms (castle) */
     };
     for (i = 0; i < sizeof(front) / sizeof(front[0]); i++)
       if (front[i].page == offs >> 4)
