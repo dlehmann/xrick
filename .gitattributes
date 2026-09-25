@@ -6,4 +6,5 @@
 *.zip binary
 *.wav binary
 *.ico binary
+*.png binary
 *.gz binary

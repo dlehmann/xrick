@@ -23,6 +23,7 @@ Contents:
 - [High scores](#high-scores)
 - [Languages and translations](#languages-and-translations)
 - [Arcade mode](#arcade-mode)
+- [Maps](#maps)
 - [Release history](#release-history), [contacts](#contacts)
 
 License agreement & legal bable
@@ -480,6 +481,23 @@ $ xrick --coins --fullscreen --keys LEFT-RIGHT-UP-DOWN-LCTRL-1-2-5
 
 Keep in mind that ESC quits xrick at once, and the end key (E by default)
 ends the current game.
+
+Maps
+----
+
+`assets/docs/maps` holds a map of each world (`world1.png` to
+`world4.png`), with the submaps put together as they connect, their
+numbers (as used by `--submap`), rick's start, the exit to the next world,
+and the enemies, boxes and treasures at their start positions. The castle
+(world 3) is a maze whose submaps can not all be put side by side; red
+arrows name the submap that such a connection leads to.
+
+The maps are made from the data of the data extractor by
+`source/tools/render_maps.py` (Python 3 with Pillow):
+
+```
+$ python3 source/tools/render_maps.py
+```
 
 Release History
 ---------------
