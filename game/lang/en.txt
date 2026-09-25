@@ -16,6 +16,10 @@
 # line each, at most 16 and 13 characters. Without coins the insert coin
 # text blinks, else the credits text is shown followed by the number of
 # coins.
+# [world1]..[world4], [worldnumber], [pressfire]: level select screen (a
+# secret). World names at most 26 characters; in [worldnumber] the first #
+# is replaced by the world, the second by the number of worlds; at most 30
+# characters each.
 
 [intro1]
 SOUTH AMERICA  1945
@@ -96,3 +100,21 @@ INSERT COIN
 
 [credits]
 CREDITS
+
+[world1]
+SOUTH AMERICA 1945
+
+[world2]
+EGYPT
+
+[world3]
+EUROPE, CASTLE
+
+[world4]
+EUROPE, MISSILE BASE
+
+[worldnumber]
+WORLD # OF #
+
+[pressfire]
+PRESS FIRE TO START

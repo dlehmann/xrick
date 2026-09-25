@@ -70,6 +70,12 @@ processEvent()
     else if (key == syskbd_fire) {
       control_set(Control_FIRE);
     }
+    else if (key == syskbd_b) {
+      control_set(Control_B);
+    }
+    else if (key == syskbd_a) {
+      control_set(Control_A);
+    }
     else if (key == syskbd_coin) {
       /* one coin per key press, key repeat is off */
       if (sysarg_args_coins && control_coins < 99)
@@ -132,6 +138,12 @@ processEvent()
     }
     else if (key == syskbd_fire) {
       control_clear(Control_FIRE);
+    }
+    else if (key == syskbd_b) {
+      control_clear(Control_B);
+    }
+    else if (key == syskbd_a) {
+      control_clear(Control_A);
     }
     break;
   case SDL_QUIT:

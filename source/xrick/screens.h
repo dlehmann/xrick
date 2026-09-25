@@ -25,6 +25,8 @@
 #define SCREEN_RUNNING 0
 #define SCREEN_DONE 1
 #define SCREEN_EXIT 2
+#define SCREEN_SELECT 3  /* level select requested (screen_introMain) */
+#define SCREEN_BACK 4    /* back to the main intro (screen_selectMap) */
 
 typedef struct {
   U16 count;  /* number of loops */
@@ -65,6 +67,7 @@ extern U8 *screen_pausedtxt;  /* paused */
 extern U8 screen_xrick(void);  /* splash */
 extern U8 screen_introMain(void);  /* main intro */
 extern U8 screen_introMap(void);  /* map intro */
+extern U8 screen_selectMap(void);  /* level select */
 extern U8 screen_gameover(void);  /* gameover */
 extern U8 screen_getname(void);  /* enter you name */
 extern void screen_pause(bool);  /* pause indicator */

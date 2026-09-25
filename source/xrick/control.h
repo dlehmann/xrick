@@ -27,7 +27,9 @@ typedef enum
     Control_PAUSE = (1 << 4),
     Control_END = (1 << 5),
     Control_EXIT = (1 << 6),
-    Control_FIRE = (1 << 7)
+    Control_FIRE = (1 << 7),
+    Control_B = (1 << 8),  /* only used by the konami code */
+    Control_A = (1 << 9)
 } control_t;
 
 extern unsigned control_status;

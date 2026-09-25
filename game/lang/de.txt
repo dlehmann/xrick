@@ -85,3 +85,21 @@ Münze einwerfen
 
 [credits]
 Credits
+
+[world1]
+Südamerika 1945
+
+[world2]
+Ägypten
+
+[world3]
+Europa, Schloss
+
+[world4]
+Europa, Raketenbasis
+
+[worldnumber]
+Welt # von #
+
+[pressfire]
+Feuer zum Starten

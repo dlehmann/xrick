@@ -24,6 +24,7 @@
 #define LANG_DIR "lang"
 #define LANG_DEFAULT "en"
 #define LANG_NBR_IMAPTEXT 5
+#define LANG_NBR_WORLDS 4
 
 /* texts from the language file, NULL when not translated */
 extern U8 *lang_imaptext[LANG_NBR_IMAPTEXT];
@@ -32,6 +33,9 @@ extern U8 *lang_pausedtxt;
 extern U8 *lang_getnametxt;
 extern U8 *lang_insertcointxt;
 extern U8 *lang_creditstxt;
+extern U8 *lang_worldtxt[LANG_NBR_WORLDS];
+extern U8 *lang_worldnumbertxt;
+extern U8 *lang_pressfiretxt;
 
 extern bool lang_load(const char *);
 

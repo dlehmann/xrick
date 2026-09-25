@@ -93,9 +93,59 @@ coins_draw(bool newpic)
 }
 
 /*
+ * konami code: up up down down left right left right B A. It leads to
+ * the level select screen.
+ */
+#define KONAMI_LENGTH 10
+#define KONAMI_TIMEOUT 3000  /* max time between two keys, in ms */
+#define KONAMI_KEYS (Control_UP | Control_DOWN | Control_LEFT | \
+                     Control_RIGHT | Control_B | Control_A)
+
+static const control_t konami_keys[KONAMI_LENGTH] = {
+    Control_UP, Control_UP, Control_DOWN, Control_DOWN,
+    Control_LEFT, Control_RIGHT, Control_LEFT, Control_RIGHT,
+    Control_B, Control_A
+};
+static U8 konami_pos;         /* number of keys of the code entered */
+static unsigned konami_prev;  /* controls of the previous frame */
+static U32 konami_tm;         /* time of the last key */
+
+/*
+ * Follow the keys pressed
+ *
+ * return: true when the whole code has been entered
+ */
+static bool
+konami_update(void)
+{
+    unsigned pressed = control_status & ~konami_prev & KONAMI_KEYS;
+
+    konami_prev = control_status;
+    if (!pressed) {
+        if (konami_pos && sys_gettime() - konami_tm > KONAMI_TIMEOUT)
+            konami_pos = 0;
+        return false;
+    }
+    konami_tm = sys_gettime();
+
+    if (pressed == (unsigned)konami_keys[konami_pos])
+        konami_pos++;
+    else if (pressed == Control_UP)
+        konami_pos = (konami_pos == 2) ? 2 : 1;  /* up up up ... */
+    else
+        konami_pos = 0;
+
+    if (konami_pos == KONAMI_LENGTH) {
+        konami_pos = 0;
+        return true;
+    }
+    return false;
+}
+
+/*
  * Main introduction
  *
- * return: SCREEN_RUNNING, SCREEN_DONE, SCREEN_EXIT
+ * return: SCREEN_RUNNING, SCREEN_DONE, SCREEN_SELECT, SCREEN_EXIT
  */
 U8
 screen_introMain(void)
@@ -110,6 +160,8 @@ screen_introMain(void)
 
     if (seq == 0) {
         coins_seen = control_coins;
+        konami_pos = 0;
+        konami_prev = control_status;
         draw_tilesBank = 0;
         if (first)
             seq = 1;
@@ -124,6 +176,13 @@ screen_introMain(void)
     }
 
     newpic = (seq == 1 || seq == 4);  /* title or hall of fame drawn now */
+
+    if (konami_update()) {
+#ifdef ENABLE_SOUND
+        syssnd_play(soundBonus, 1);
+#endif
+        seq = 9;
+    }
 
     switch (seq)
     {
@@ -230,7 +289,7 @@ screen_introMain(void)
      * coin mode: a coin inserted now starts a game right away, fire
      * starts one with a coin inserted before
      */
-    if (sysarg_args_coins && seq != 7) {
+    if (sysarg_args_coins && seq != 7 && seq != 9) {
         if (seq == 8) {  /* wait for key released */
             if (!(control_test(Control_FIRE)))
                 seq = 7;
@@ -245,14 +304,18 @@ screen_introMain(void)
     if (control_test(Control_EXIT))  /* check for exit request */
         return SCREEN_EXIT;
 
-    if (seq == 7) {  /* we're done */
-        if (sysarg_args_coins)
+    if (seq == 7 || seq == 9) {  /* we're done */
+        if (seq == 7 && sysarg_args_coins)
             control_coins--;  /* one coin per game */
         sysvid_clear();
-        seq = 0;
+        game_period = period;
         seen = 0;
         first = false;
-        game_period = period;
+        if (seq == 9) {  /* konami code: level select */
+            seq = 0;
+            return SCREEN_SELECT;
+        }
+        seq = 0;
         return SCREEN_DONE;
     }
     else

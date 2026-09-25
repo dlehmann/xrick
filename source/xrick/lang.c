@@ -30,6 +30,9 @@
  *   [entername]            prompt on the high score name screen, one line
  *   [insertcoin]           start screen prompt in coin mode, one line
  *   [credits]              label of the coin counter in coin mode, one line
+ *   [world1] ... [world4]  world names on the level select screen
+ *   [worldnumber]          "world 1 of 4" line, '#' stands for the numbers
+ *   [pressfire]            level select prompt, one line
  *
  * Lines starting with '#' are comments. Missing sections keep the texts
  * from the data archive. The game font only has A-Z, 0-9, ',', '.', '?'
@@ -59,11 +62,14 @@ enum {
   PAUSED_MINWIDTH = 10,
   GETNAME_WIDTH = 30,    /* drawn at x=40 */
   COINS_WIDTH = 16,      /* between the logos of the title screen */
+  WORLD_WIDTH = 26,      /* level select title, between two arrows */
   LINE_SIZE = 256
 };
 
 enum { SEC_NONE, SEC_IMAP, SEC_GAMEOVER = SEC_IMAP + LANG_NBR_IMAPTEXT,
-       SEC_PAUSED, SEC_GETNAME, SEC_INSERTCOIN, SEC_CREDITS };
+       SEC_PAUSED, SEC_GETNAME, SEC_INSERTCOIN, SEC_CREDITS,
+       SEC_WORLD, SEC_WORLDNUMBER = SEC_WORLD + LANG_NBR_WORLDS,
+       SEC_PRESSFIRE };
 
 /*
  * global vars
@@ -74,6 +80,9 @@ U8 *lang_pausedtxt = NULL;
 U8 *lang_getnametxt = NULL;
 U8 *lang_insertcointxt = NULL;
 U8 *lang_creditstxt = NULL;
+U8 *lang_worldtxt[LANG_NBR_WORLDS];
+U8 *lang_worldnumbertxt = NULL;
+U8 *lang_pressfiretxt = NULL;
 
 /*
  * local vars
@@ -84,6 +93,9 @@ static U8 paused_buf[3 * (BANNER_WIDTH + 1) + 1];
 static U8 getname_buf[GETNAME_WIDTH + 1];
 static U8 insertcoin_buf[COINS_WIDTH + 1];
 static U8 credits_buf[COINS_WIDTH + 1];
+static U8 world_buf[LANG_NBR_WORLDS][WORLD_WIDTH + 1];
+static U8 worldnumber_buf[IMAP_WIDTH + 1];
+static U8 pressfire_buf[IMAP_WIDTH + 1];
 
 /* raw lines of the section being read */
 static char sec_lines[IMAP_LINES][LINE_SIZE];
@@ -95,6 +107,8 @@ static int sec_nbr_lines;
  *
  * return: number of tiles
  */
+static bool keep_hash = false;  /* keep '#' number placeholders */
+
 static size_t
 to_tiles(const char *s, U8 *tiles, size_t max)
 {
@@ -122,7 +136,7 @@ to_tiles(const char *s, U8 *tiles, size_t max)
     }
     else if (c >= 'a' && c <= 'z') c -= 'a' - 'A';
     else if (!((c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') ||
-               c == ',' || c == '.' || c == '?'))
+               c == ',' || c == '.' || c == '?' || (c == '#' && keep_hash)))
       c = TILE_BLANK;
 
     if (!t) {
@@ -227,6 +241,16 @@ end_section(int sec)
   else if (sec == SEC_CREDITS)
     /* room for a blank and the number */
     lang_creditstxt = make_text(credits_buf, sec_lines[0], COINS_WIDTH - 3);
+  else if (sec >= SEC_WORLD && sec < SEC_WORLD + LANG_NBR_WORLDS)
+    lang_worldtxt[sec - SEC_WORLD] =
+      make_text(world_buf[sec - SEC_WORLD], sec_lines[0], WORLD_WIDTH);
+  else if (sec == SEC_WORLDNUMBER) {
+    keep_hash = true;
+    lang_worldnumbertxt = make_text(worldnumber_buf, sec_lines[0], IMAP_WIDTH);
+    keep_hash = false;
+  }
+  else if (sec == SEC_PRESSFIRE)
+    lang_pressfiretxt = make_text(pressfire_buf, sec_lines[0], IMAP_WIDTH);
 }
 
 /*
@@ -244,6 +268,10 @@ section(const char *s)
   if (!strncmp(s, "[entername]", 11)) return SEC_GETNAME;
   if (!strncmp(s, "[insertcoin]", 12)) return SEC_INSERTCOIN;
   if (!strncmp(s, "[credits]", 9)) return SEC_CREDITS;
+  if (sscanf(s, "[world%d]", &n) == 1 && n >= 1 && n <= LANG_NBR_WORLDS)
+    return SEC_WORLD + n - 1;
+  if (!strncmp(s, "[worldnumber]", 13)) return SEC_WORLDNUMBER;
+  if (!strncmp(s, "[pressfire]", 11)) return SEC_PRESSFIRE;
   return SEC_NONE;
 }
 

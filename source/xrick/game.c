@@ -43,7 +43,7 @@ typedef enum {
 #endif
   XRICK,
   INIT_GAME, INIT_BUFFER,
-  INTRO_MAIN, INTRO_MAP,
+  INTRO_MAIN, INTRO_MAP, SELECT_MAP,
   PAUSE_PRESSED1, PAUSE_PRESSED1B, PAUSED, PAUSE_PRESSED2,
   PLAY0, PLAY1, PLAY2, PLAY3,
   CHAIN_SUBMAP, CHAIN_MAP, CHAIN_END,
@@ -90,6 +90,7 @@ static sound_t *currentMusic = NULL;
  */
 static void frame(void);
 static void init(void);
+static void init_map(U8, U8);
 static void play0(void);
 static void play3(void);
 static void restart(void);
@@ -332,6 +333,28 @@ frame(void)
                 return;
             case SCREEN_DONE:
                 game_state = INTRO_MAP;
+                break;
+            case SCREEN_SELECT:
+                game_state = SELECT_MAP;
+                break;
+            case SCREEN_EXIT:
+                game_state = EXIT;
+                return;
+            }
+        break;
+
+
+
+        case SELECT_MAP:
+            switch (screen_selectMap()) {
+            case SCREEN_RUNNING:
+                return;
+            case SCREEN_DONE:
+                init_map(game_map, 0);
+                game_state = INTRO_MAP;
+                break;
+            case SCREEN_BACK:
+                game_state = INTRO_MAIN;
                 break;
             case SCREEN_EXIT:
                 game_state = EXIT;
@@ -589,8 +612,6 @@ frame(void)
 static void
 init(void)
 {
-  U8 i;
-
   e_rick_state_clear(0xff);
 
   game_lives = 6;
@@ -598,9 +619,24 @@ init(void)
   game_bullets = 6;
   game_score = 0;
 
-  game_map = sysarg_args_map;
+  init_map(sysarg_args_map, sysarg_args_submap);
+}
 
-  if (sysarg_args_submap == 0)
+
+/*
+ * Initialize the map to start from
+ *
+ * map: map number
+ * submap: submap number, 0 for the first submap of the map
+ */
+static void
+init_map(U8 map, U8 submap)
+{
+  U8 i;
+
+  game_map = map;
+
+  if (submap == 0)
   {
       game_submap = map_maps[game_map].submap;
       map_frow = (U8)map_maps[game_map].row;
@@ -608,7 +644,7 @@ init(void)
   else
   {
       /* dirty hack to determine frow */
-      game_submap = sysarg_args_submap;
+      game_submap = submap;
       i = 0;
       while (i < map_nbr_connect &&
             (map_connect[i].submap != game_submap ||

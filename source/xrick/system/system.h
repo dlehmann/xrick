@@ -132,6 +132,8 @@ extern U8 syskbd_end;
 extern U8 syskbd_xtra;
 extern U8 syskbd_fire;
 extern U8 syskbd_coin;
+extern U8 syskbd_b;
+extern U8 syskbd_a;
 
 /*
  * sound section
