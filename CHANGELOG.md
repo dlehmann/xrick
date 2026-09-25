@@ -48,7 +48,7 @@ Bugfixes:
 * Added an "xrick" splash screen
 * Various minor bugfixes
 * New command line options: -nosound to disable sound, and -vol <vol> to set volume to <vol>
-* Man page (thanks to André Majorel)
+* Man page (thanks to AndrÃ© Majorel)
 * Cheats now an option that can be turned off at compile time
 * Updated -help text
 * Add "500" animation when capturing bonus

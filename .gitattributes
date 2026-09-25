@@ -1,0 +1,9 @@
+# Text files use LF line endings everywhere
+* text=auto eol=lf
+
+# Binary data
+*.dat binary
+*.zip binary
+*.wav binary
+*.ico binary
+*.gz binary
