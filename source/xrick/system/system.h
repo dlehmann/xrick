@@ -105,6 +105,7 @@ typedef void *file_t;
 extern const char *sysfile_defaultPath;
 
 extern bool sysfile_setRootPath(const char *);
+extern void sysfile_dataPath(char *, size_t, const char *);
 extern void sysfile_clearRootPath(void);
 
 extern file_t sysfile_open(const char *);

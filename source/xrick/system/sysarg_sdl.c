@@ -119,7 +119,7 @@ static void sysarg_help(void)
 #ifdef ENABLE_LANG_FILE
        "  --lang <lang>      Show the in-game texts in language <lang>,\n"
        "                     read from lang/<lang>.txt in the directory\n"
-       "                     where xrick is run from, e.g. \"--lang de\".\n"
+       "                     of the data archive, e.g. \"--lang de\".\n"
        "                     The default is \"en\".\n"
 #endif /* ENABLE_LANG_FILE */
        "  --version          Print version information.\n\n",

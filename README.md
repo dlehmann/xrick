@@ -70,21 +70,46 @@ Usage
 
 `xrick --help` will tell you all about command-line options.
 
-High scores are saved to `highscores.txt` in the directory where xrick is
-run from. The file is created empty on first start and can be edited by
-hand: one entry per line as `SCORE NAME`, names up to 10 characters (A-Z,
-0-9, `.` and spaces). Delete the file to reset the high scores.
+### Data directory
 
-The in-game texts (map intros, game over, pause, name entry) are read from
-`lang/en.txt` in the directory where xrick is run from. `xrick --lang de`
-uses `lang/de.txt` instead. To add a language, copy `en.txt` to
-`lang/<code>.txt`, translate it and start xrick with `--lang <code>`; the
-file itself describes the format.
+xrick looks for its data in `data.zip` in the directory where it is run
+from; `--data <archive>` points it to another zip file or to a directory
+with the unpacked data. The high scores and the language files live next to
+the data, in the *data directory*:
+
+- the directory that contains the zip file, e.g. `/usr/local/share/xrick`
+  for `--data /usr/local/share/xrick/data.zip`,
+- or the data directory itself, if `--data` names a directory.
+
+Without `--data`, this is the directory where xrick is run from. For an
+installed xrick (`make install`), start it with `--data` pointing to the
+installed `data.zip`, so that it finds the language files installed next
+to it.
+
+### High scores
+
+High scores are saved to `highscores.txt` in the data directory. The file
+is created empty on first start and can be edited by hand: one entry per
+line as `SCORE NAME`, names up to 10 characters (A-Z, 0-9, `.` and
+spaces). Delete the file to reset the high scores. If the data directory
+is not writable (e.g. a system wide installation), xrick says so on the
+console and keeps the high scores only until it exits.
+
+### Languages
+
+The in-game texts (map intros, game over, pause, name entry, coin mode and
+level select) are read from `lang/en.txt` in the data directory.
+`xrick --lang de` uses `lang/de.txt` instead. To add a language, copy
+`en.txt` to `lang/<code>.txt`, translate it and start xrick with
+`--lang <code>`; the file itself describes the format.
+
+### Arcade mode
 
 `xrick --coins` turns on the arcade mode: the start screen asks for a coin,
-inserted with the C key, or shows the number of coins left. A coin inserted on the start screen starts a game
-right away; with coins inserted before, fire starts a game. Each coin is
-good for one game, coins inserted while playing are kept for the next ones.
+inserted with the C key, or shows the number of coins left. A coin
+inserted on the start screen starts a game right away; with coins inserted
+before, fire starts a game. Each coin is good for one game, coins inserted
+while playing are kept for the next ones.
 
 Controls
 --------

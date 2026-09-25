@@ -18,10 +18,10 @@
  *
  * Replaces the in-game texts with those of a language file, so that the
  * game can be played in other languages. "--lang de" loads lang/de.txt
- * from the directory where xrick is run from; without --lang, lang/en.txt
- * is loaded, which also serves as a template for new languages. If that
- * file is missing, the texts from the data archive are used. The file is
- * plain UTF-8 text made of sections:
+ * next to the game data (see sysfile_dataPath); without --lang,
+ * lang/en.txt is loaded, which also serves as a template for new
+ * languages. If that file is missing, the texts from the data archive are
+ * used. The file is plain UTF-8 text made of sections:
  *
  *   [intro1] ... [intro5]  map intro texts: a title line, then up to
  *                          11 lines of text
@@ -285,12 +285,14 @@ bool
 lang_load(const char *code)
 {
   FILE *fp;
-  char path[256];
+  char name[64];
+  char path[1024];
   char line[LINE_SIZE];
   int sec = SEC_NONE;
   size_t len;
 
-  sys_snprintf(path, sizeof(path), "%s/%s.txt", LANG_DIR, code);
+  sys_snprintf(name, sizeof(name), "%s/%s.txt", LANG_DIR, code);
+  sysfile_dataPath(path, sizeof(path), name);
   fp = fopen(path, "r");
   if (!fp) {
     sys_printf("xrick/lang: can not open \"%s\"\n", path);

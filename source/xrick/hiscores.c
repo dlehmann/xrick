@@ -17,16 +17,18 @@
  * NOTES
  *
  * Keeps the hall of fame in a plain text file, so that it survives
- * restarts and can be edited by hand. One entry per line:
+ * restarts and can be edited by hand. The file is highscores.txt next to
+ * the game data (see sysfile_dataPath). One entry per line:
  *
  *   SCORE NAME
  *
  * Lines that are empty or start with '#' are ignored. Names are upper
  * cased and may contain A-Z, 0-9, '.' and spaces; any other character
  * becomes a space. Entries are sorted by score and only the best ones
- * are kept. If the file lacks entries, the remaining slots are cleared. If the file does not exist,
- * the hall of fame starts empty and the file is created, so deleting it
- * resets the high scores.
+ * are kept. If the file lacks entries, the remaining slots are cleared.
+ * If the file does not exist, the hall of fame starts empty and the file
+ * is created, so deleting it resets the high scores. If the file can not
+ * be written, the high scores only last until xrick exits.
  */
 
 #include "xrick/hiscores.h"
@@ -43,6 +45,9 @@
 
 #define HISCORES_MAX_SCORE 999999  /* six digits in the hall of fame */
 #define NAME_BLANK '@'  /* blank tile */
+
+/* path of the high scores file, next to the game data */
+static char hiscores_path[1024];
 
 /*
  * Convert one character typed in the file to a name tile
@@ -76,7 +81,8 @@ hiscores_load(void)
       screen_highScores[i].name[j] = NAME_BLANK;
   }
 
-  fp = fopen(HISCORES_FILE, "r");
+  sysfile_dataPath(hiscores_path, sizeof(hiscores_path), HISCORES_FILE);
+  fp = fopen(hiscores_path, "r");
   while (fp && fgets(line, sizeof(line), fp)) {
     s = line;
     while (isspace((unsigned char)*s)) s++;
@@ -129,9 +135,9 @@ hiscores_save(void)
   size_t i, j, len;
   char name[HISCORE_NAME_SIZE + 1];
 
-  fp = fopen(HISCORES_FILE, "w");
+  fp = fopen(hiscores_path, "w");
   if (!fp) {
-    sys_printf("xrick/hiscores: can not write \"%s\"\n", HISCORES_FILE);
+    sys_printf("xrick/hiscores: can not write \"%s\"\n", hiscores_path);
     return;
   }
 
@@ -154,7 +160,7 @@ hiscores_save(void)
   }
 
   if (fclose(fp) != 0)
-    sys_printf("xrick/hiscores: can not write \"%s\"\n", HISCORES_FILE);
+    sys_printf("xrick/hiscores: can not write \"%s\"\n", hiscores_path);
 }
 
 #endif /* ENABLE_HISCORE_FILE */

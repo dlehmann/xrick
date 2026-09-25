@@ -251,6 +251,45 @@ sysfile_close(file_t file)
     }
 }
 
+/*
+ * Build the path of a file that lives next to the game data: in the
+ * directory of the zip archive, or in the data directory itself. Without
+ * --data this is the directory where xrick is run from.
+ *
+ * buf: receives the path
+ * size: size of buf
+ * name: file name, relative to the data directory
+ */
+void
+sysfile_dataPath(char *buf, size_t size, const char *name)
+{
+    const char *root = rootPath.name ? rootPath.name : ".";
+    size_t len = strlen(root);
+
+#ifdef ENABLE_ZIP
+    if (rootPath.zip)
+    {
+        /* strip the archive name, keep its directory */
+        while (len > 0 && root[len - 1] != '/'
+#ifdef __WIN32__
+               && root[len - 1] != '\\'
+#endif
+              ) len--;
+        if (len == 0)
+        {
+            root = ".";  /* archive in the current directory */
+            len = 1;
+        }
+        else
+        {
+            len--;  /* drop the separator, "/" becomes "" + "/name" */
+        }
+    }
+#endif /* ENABLE_ZIP */
+    sys_snprintf(buf, size, "%.*s/%s", (int)len, root, name);
+    str_toNativeSeparators(buf);
+}
+
 #ifdef ENABLE_ZIP
 /*
  * Returns 1 if filename has .zip extension.
