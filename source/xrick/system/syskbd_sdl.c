@@ -19,19 +19,20 @@
 
 /*
  * Global variables: key codes of the controls, SDL version. The arrow
- * keys work too, see sysevt_sdl.c; --keys changes the first five.
+ * keys work too, see sysevt_sdl.c; --keys changes the first five. SDL
+ * key codes go up to SDLK_LAST (323), hence U16.
  */
-U8 syskbd_up = SDLK_o;
-U8 syskbd_down = SDLK_k;
-U8 syskbd_left = SDLK_z;
-U8 syskbd_right = SDLK_x;
-U8 syskbd_pause = SDLK_p;
-U8 syskbd_end = SDLK_e;
-U8 syskbd_xtra = SDLK_ESCAPE;
-U8 syskbd_fire = SDLK_SPACE;
-U8 syskbd_coin = SDLK_c;
-U8 syskbd_b = SDLK_b;
-U8 syskbd_a = SDLK_a;
+U16 syskbd_up = SDLK_o;
+U16 syskbd_down = SDLK_k;
+U16 syskbd_left = SDLK_z;
+U16 syskbd_right = SDLK_x;
+U16 syskbd_pause = SDLK_p;
+U16 syskbd_end = SDLK_e;
+U16 syskbd_xtra = SDLK_ESCAPE;
+U16 syskbd_fire = SDLK_SPACE;
+U16 syskbd_coin = SDLK_c;
+U16 syskbd_b = SDLK_b;
+U16 syskbd_a = SDLK_a;
 
 /* eof */
 

@@ -53,7 +53,7 @@ int sysarg_args_submap = 0;
 int sysarg_args_fullscreen = 0;
 int sysarg_args_zoom = 0;
 bool sysarg_args_nosound = false;
-int sysarg_args_vol = 0;
+int sysarg_args_vol = -1;  /* not given */
 const char *sysarg_args_data = NULL;
 bool sysarg_args_coins = false;
 #ifdef ENABLE_LANG_FILE
@@ -103,7 +103,8 @@ static void sysarg_help(void)
        "                     at the first submap of that map.\n"
        "  --keys <left>-<right>-<up>-<down>-<fire>\n"
        "                     Override the default key bindings\n"
-       "                     (cf. KeyCodes).\n"
+       "                     (cf. KeyCodes), e.g. \"a-d-w-s-SPACE\".\n"
+       "                     The arrow keys always work too.\n"
        "  --data <archive>   Use data archive <archive>\n"
        "                     <archive> must be either a zip file or\n"
        "                     a directory. The default is to look for \"data.zip\"\n"
@@ -249,8 +250,8 @@ sysarg_init(int argc, char **argv)
                 sysarg_fail("missing speed value");
                 return false;
             }
-            sysarg_args_period = atoi(argv[i]) - 1;
-            if (sysarg_args_period < 0 || sysarg_args_period > 99)
+            sysarg_args_period = atoi(argv[i]);
+            if (sysarg_args_period < 1 || sysarg_args_period > 100)
             {
                 sysarg_fail("invalid speed value");
                 return false;
@@ -319,8 +320,8 @@ sysarg_init(int argc, char **argv)
                 sysarg_fail("missing volume");
                 return false;
             }
-            sysarg_args_vol = atoi(argv[i]) - 1;
-            if (sysarg_args_submap < 0 || sysarg_args_submap >= SYSSND_MAXVOL)
+            sysarg_args_vol = atoi(argv[i]);
+            if (sysarg_args_vol < 0 || sysarg_args_vol > SYSSND_MAXVOL)
             {
                 sysarg_fail("invalid volume");
                 return false;

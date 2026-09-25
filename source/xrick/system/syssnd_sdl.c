@@ -170,7 +170,7 @@ bool syssnd_init(void)
         return true; /* shall we treat this as an error? */
     }
 
-    if (sysarg_args_vol != 0)
+    if (sysarg_args_vol >= 0)  /* --vol given */
     {
         sndUVol = sysarg_args_vol;
         sndVol = SDL_MIX_MAXVOLUME * sndUVol / SYSSND_MAXVOL;

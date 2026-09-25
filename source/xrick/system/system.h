@@ -146,17 +146,17 @@ extern void sysevt_wait(void);  /* wait for an event, then process events */
 /*
  * keyboard section: key codes of the controls
  */
-extern U8 syskbd_up;
-extern U8 syskbd_down;
-extern U8 syskbd_left;
-extern U8 syskbd_right;
-extern U8 syskbd_pause;
-extern U8 syskbd_end;
-extern U8 syskbd_xtra;  /* exit */
-extern U8 syskbd_fire;
-extern U8 syskbd_coin;  /* insert a coin (--coins) */
-extern U8 syskbd_b;     /* B and A, for the konami code */
-extern U8 syskbd_a;
+extern U16 syskbd_up;
+extern U16 syskbd_down;
+extern U16 syskbd_left;
+extern U16 syskbd_right;
+extern U16 syskbd_pause;
+extern U16 syskbd_end;
+extern U16 syskbd_xtra;  /* exit */
+extern U16 syskbd_fire;
+extern U16 syskbd_coin;  /* insert a coin (--coins) */
+extern U16 syskbd_b;     /* B and A, for the konami code */
+extern U16 syskbd_a;
 
 /*
  * sound section
@@ -185,7 +185,7 @@ extern int sysarg_args_fullscreen;  /* --fullscreen */
 extern int sysarg_args_zoom;        /* --zoom, 0 for the default */
 #ifdef ENABLE_SOUND
 extern bool sysarg_args_nosound;    /* --nosound */
-extern int sysarg_args_vol;         /* --vol, 0 based */
+extern int sysarg_args_vol;         /* --vol, -1 when not given */
 #endif /* ENABLE_ SOUND */
 extern const char *sysarg_args_data;  /* --data, NULL for the default */
 extern bool sysarg_args_coins;      /* --coins */
