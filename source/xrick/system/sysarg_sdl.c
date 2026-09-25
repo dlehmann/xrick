@@ -51,6 +51,7 @@ int sysarg_args_zoom = 0;
 bool sysarg_args_nosound = false;
 int sysarg_args_vol = 0;
 const char *sysarg_args_data = NULL;
+bool sysarg_args_coins = false;
 #ifdef ENABLE_LANG_FILE
 const char *sysarg_args_lang = NULL;
 #endif /* ENABLE_LANG_FILE */
@@ -111,6 +112,10 @@ static void sysarg_help(void)
        "                     and %d (max). The default is to play sounds\n"
        "                     at maximum volume (%d).\n"
 #endif /* ENABLE_SOUND */
+       "  --coins            Arcade mode: a game needs a coin, inserted\n"
+       "                     with the C key. Each coin is good for one\n"
+       "                     game; coins inserted while playing are kept\n"
+       "                     for the next games.\n"
 #ifdef ENABLE_LANG_FILE
        "  --lang <lang>      Show the in-game texts in language <lang>,\n"
        "                     read from lang/<lang>.txt in the directory\n"
@@ -322,6 +327,10 @@ sysarg_init(int argc, char **argv)
                 return false;
             }
             sysarg_args_data = argv[i];
+        }
+        else if (!strcmp(argv[i], "--coins"))
+        {
+            sysarg_args_coins = true;
         }
 #ifdef ENABLE_LANG_FILE
         else if (!strcmp(argv[i], "--lang"))

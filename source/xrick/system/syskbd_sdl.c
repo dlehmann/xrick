@@ -28,6 +28,7 @@ U8 syskbd_pause = SDLK_p;
 U8 syskbd_end = SDLK_e;
 U8 syskbd_xtra = SDLK_ESCAPE;
 U8 syskbd_fire = SDLK_SPACE;
+U8 syskbd_coin = SDLK_c;
 
 /* eof */
 

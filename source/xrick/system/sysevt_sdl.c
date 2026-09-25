@@ -70,6 +70,11 @@ processEvent()
     else if (key == syskbd_fire) {
       control_set(Control_FIRE);
     }
+    else if (key == syskbd_coin) {
+      /* one coin per key press, key repeat is off */
+      if (sysarg_args_coins && control_coins < 99)
+        control_coins++;
+    }
     else if (key == SDLK_F1) {
       sysvid_toggleFullscreen();
     }

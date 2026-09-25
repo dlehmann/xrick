@@ -28,12 +28,14 @@
  *   [gameover]             game over banner, one line
  *   [paused]               pause banner, one line
  *   [entername]            prompt on the high score name screen, one line
+ *   [insertcoin]           start screen prompt in coin mode, one line
+ *   [credits]              label of the coin counter in coin mode, one line
  *
  * Lines starting with '#' are comments. Missing sections keep the texts
- * from the data archive. The game font only has A-Z, 0-9, ',', '.', '?' and blanks:
- * lower case is upper cased, German umlauts become AE, OE, UE and SS,
- * anything else becomes a blank. Lines are centered by the game and cut
- * when too long for the screen.
+ * from the data archive. The game font only has A-Z, 0-9, ',', '.', '?'
+ * and blanks: lower case is upper cased, German umlauts become AE, OE, UE
+ * and SS, anything else becomes a blank. Lines are centered by the game
+ * and cut when too long for the screen.
  */
 
 #include "xrick/lang.h"
@@ -56,11 +58,12 @@ enum {
   GAMEOVER_MINWIDTH = 13,
   PAUSED_MINWIDTH = 10,
   GETNAME_WIDTH = 30,    /* drawn at x=40 */
+  COINS_WIDTH = 16,      /* between the logos of the title screen */
   LINE_SIZE = 256
 };
 
 enum { SEC_NONE, SEC_IMAP, SEC_GAMEOVER = SEC_IMAP + LANG_NBR_IMAPTEXT,
-       SEC_PAUSED, SEC_GETNAME };
+       SEC_PAUSED, SEC_GETNAME, SEC_INSERTCOIN, SEC_CREDITS };
 
 /*
  * global vars
@@ -69,6 +72,8 @@ U8 *lang_imaptext[LANG_NBR_IMAPTEXT];
 U8 *lang_gameovertxt = NULL;
 U8 *lang_pausedtxt = NULL;
 U8 *lang_getnametxt = NULL;
+U8 *lang_insertcointxt = NULL;
+U8 *lang_creditstxt = NULL;
 
 /*
  * local vars
@@ -77,6 +82,8 @@ static U8 imap_buf[LANG_NBR_IMAPTEXT][IMAP_LINES * (IMAP_WIDTH + 1) + 1];
 static U8 gameover_buf[3 * (BANNER_WIDTH + 1) + 1];
 static U8 paused_buf[3 * (BANNER_WIDTH + 1) + 1];
 static U8 getname_buf[GETNAME_WIDTH + 1];
+static U8 insertcoin_buf[COINS_WIDTH + 1];
+static U8 credits_buf[COINS_WIDTH + 1];
 
 /* raw lines of the section being read */
 static char sec_lines[IMAP_LINES][LINE_SIZE];
@@ -155,6 +162,16 @@ put_line(U8 *d, const char *s, size_t width, U8 end)
 }
 
 /*
+ * Convert a line to a tiles list, as is
+ */
+static U8 *
+make_text(U8 *buf, const char *s, size_t width)
+{
+  buf[to_tiles(s, buf, width)] = TILE_EOT;
+  return buf;
+}
+
+/*
  * Build a banner: blank line, text, blank line
  */
 static U8 *
@@ -205,6 +222,11 @@ end_section(int sec)
     put_line(getname_buf, sec_lines[0], GETNAME_WIDTH, TILE_EOT);
     lang_getnametxt = getname_buf;
   }
+  else if (sec == SEC_INSERTCOIN)
+    lang_insertcointxt = make_text(insertcoin_buf, sec_lines[0], COINS_WIDTH);
+  else if (sec == SEC_CREDITS)
+    /* room for a blank and the number */
+    lang_creditstxt = make_text(credits_buf, sec_lines[0], COINS_WIDTH - 3);
 }
 
 /*
@@ -220,6 +242,8 @@ section(const char *s)
   if (!strncmp(s, "[gameover]", 10)) return SEC_GAMEOVER;
   if (!strncmp(s, "[paused]", 8)) return SEC_PAUSED;
   if (!strncmp(s, "[entername]", 11)) return SEC_GETNAME;
+  if (!strncmp(s, "[insertcoin]", 12)) return SEC_INSERTCOIN;
+  if (!strncmp(s, "[credits]", 9)) return SEC_CREDITS;
   return SEC_NONE;
 }
 

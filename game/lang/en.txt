@@ -12,6 +12,10 @@
 # to 11 lines of at most 30 characters (empty lines allowed).
 # [gameover], [paused]: one line, at most 23 characters.
 # [entername]: one line, at most 30 characters.
+# [insertcoin], [credits]: start screen texts in coin mode (--coins), one
+# line each, at most 16 and 13 characters. Without coins the insert coin
+# text blinks, else the credits text is shown followed by the number of
+# coins.
 
 [intro1]
 SOUTH AMERICA  1945
@@ -86,3 +90,9 @@ PAUSED
 
 [entername]
 PLEASE ENTER YOUR NAME
+
+[insertcoin]
+INSERT COIN
+
+[credits]
+CREDITS

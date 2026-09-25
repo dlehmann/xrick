@@ -72,10 +72,16 @@ Was wird Rick als Nächstes
 tun ...?
 
 [gameover]
-Spiel vorbei
+Game over
 
 [paused]
 Pause
 
 [entername]
 Bitte Namen eingeben
+
+[insertcoin]
+Münze einwerfen
+
+[credits]
+Credits

@@ -32,6 +32,7 @@ int sysarg_args_map = 0;
 int sysarg_args_submap = 0;
 bool sysarg_args_nosound = false;
 const char *sysarg_args_data = NULL;
+bool sysarg_args_coins = false;
 
 /*
  * Read and process arguments

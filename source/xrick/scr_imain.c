@@ -18,10 +18,79 @@
 #include "xrick/game.h"
 #include "xrick/draw.h"
 #include "xrick/control.h"
+#include "xrick/lang.h"
 #ifdef GFXST
 #include "xrick/data/pics.h"
 #endif
 #include "xrick/system/system.h"
+
+#include <string.h>
+
+/*
+ * coin mode (--coins): text below the pictures, between the logos
+ */
+#define COINS_Y 184
+#define COINS_WIDTH 16      /* in tiles, the black band of the title */
+#define COINS_BLINK 500     /* insert coin blink half period, in ms */
+
+/* picture behind the text line, to erase the text */
+static U8 coins_background[8 * SYSVID_WIDTH];
+
+/*
+ * Draw a line of tiles centered on the screen, over the picture
+ *
+ * tiles: tiles list ending with 0xfe, NULL to erase the line only
+ */
+static void
+coins_drawLine(U8 *tiles)
+{
+    U8 *line = sysvid_fb + COINS_Y * SYSVID_WIDTH;
+    size_t i;
+
+    memcpy(line, coins_background, sizeof(coins_background));
+    if (!tiles)
+        return;
+    for (i = 0; tiles[i] != 0xfe; i++);
+    draw_setfb(SYSVID_WIDTH / 2 - i * 4, COINS_Y);
+    draw_tllst = tiles;
+    draw_tilesSubList();
+
+    /* tiles are opaque: let the picture show through their background */
+    for (i = 0; i < sizeof(coins_background); i++)
+        if (line[i] == 0)
+            line[i] = coins_background[i];
+}
+
+/*
+ * Draw the blinking insert coin prompt, or the number of coins if any
+ *
+ * newpic: the picture was just drawn
+ */
+static void
+coins_draw(bool newpic)
+{
+    U8 s[COINS_WIDTH + 1];
+    U8 *label = LANG_TEXT(lang_creditstxt, (U8 *)"CREDITS\376");
+    size_t n;
+
+    if (newpic)
+        memcpy(coins_background, sysvid_fb + COINS_Y * SYSVID_WIDTH,
+               sizeof(coins_background));
+#ifdef GFXPC
+    draw_filter = 0xffff;
+#endif
+    if (control_coins == 0) {
+        coins_drawLine((sys_gettime() / COINS_BLINK) & 1 ? NULL :
+            LANG_TEXT(lang_insertcointxt, (U8 *)"INSERT@COIN\376"));
+        return;
+    }
+
+    for (n = 0; label[n] != 0xfe && n < COINS_WIDTH - 3; n++)
+        s[n] = label[n];
+    sys_snprintf((char *)s + n, sizeof(s) - n, "@%u", control_coins);
+    s[strlen((char *)s)] = 0xfe;
+    coins_drawLine(s);
+}
 
 /*
  * Main introduction
@@ -36,8 +105,11 @@ screen_introMain(void)
     static bool first = true;
     static U8 period = 0;
     static U32 tm = 0;
+    static unsigned coins_seen = 0;
+    bool newpic;
 
     if (seq == 0) {
+        coins_seen = control_coins;
         draw_tilesBank = 0;
         if (first)
             seq = 1;
@@ -50,6 +122,8 @@ screen_introMain(void)
         game_setmusic(soundTune5, -1);
 #endif
     }
+
+    newpic = (seq == 1 || seq == 4);  /* title or hall of fame drawn now */
 
     switch (seq)
     {
@@ -78,7 +152,7 @@ screen_introMain(void)
         }
         case 2:  /* wait for key pressed or timeout */
         {
-            if (control_test(Control_FIRE))
+            if (!sysarg_args_coins && control_test(Control_FIRE))
                 seq = 3;
             else if (sys_gettime() - tm > SCREEN_TIMEOUT) {
                 seen++;
@@ -132,7 +206,7 @@ screen_introMain(void)
         }
         case 5:  /* wait for key pressed or timeout */
         {
-            if (control_test(Control_FIRE))
+            if (!sysarg_args_coins && control_test(Control_FIRE))
                 seq = 6;
             else if (sys_gettime() - tm > SCREEN_TIMEOUT) {
                 seen++;
@@ -152,10 +226,28 @@ screen_introMain(void)
         }
     }
 
+    /*
+     * coin mode: a coin inserted now starts a game right away, fire
+     * starts one with a coin inserted before
+     */
+    if (sysarg_args_coins && seq != 7) {
+        if (seq == 8) {  /* wait for key released */
+            if (!(control_test(Control_FIRE)))
+                seq = 7;
+        }
+        else if (control_coins > coins_seen)
+            seq = 7;
+        else if (control_test(Control_FIRE) && control_coins > 0)
+            seq = 8;
+        coins_draw(newpic);
+    }
+
     if (control_test(Control_EXIT))  /* check for exit request */
         return SCREEN_EXIT;
 
     if (seq == 7) {  /* we're done */
+        if (sysarg_args_coins)
+            control_coins--;  /* one coin per game */
         sysvid_clear();
         seq = 0;
         seen = 0;

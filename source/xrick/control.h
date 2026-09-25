@@ -35,6 +35,7 @@ inline bool control_test(control_t c) { return control_status & c; }
 inline void control_set(control_t c) { control_status |= c; }
 inline void control_clear(control_t c) { control_status &= ~c; }
 extern bool control_active;
+extern unsigned control_coins;  /* coins inserted and not used yet */
 
 #endif /* ndef _CONTROL_H */
 

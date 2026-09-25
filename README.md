@@ -81,11 +81,17 @@ uses `lang/de.txt` instead. To add a language, copy `en.txt` to
 `lang/<code>.txt`, translate it and start xrick with `--lang <code>`; the
 file itself describes the format.
 
+`xrick --coins` turns on the arcade mode: the start screen asks for a coin,
+inserted with the C key, or shows the number of coins left. A coin inserted on the start screen starts a game
+right away; with coins inserted before, fire starts a game. Each coin is
+good for one game, coins inserted while playing are kept for the next ones.
+
 Controls
 --------
 
 - left, right, up (jump) or down (crawl): arrow keys or Z, X, O and K.
 - fire: SPACE, end: E, pause: P, exit: ESC.
+- insert coin (with `--coins` only): C.
 - use left, right, up, down + fire to poke something with your stick,
   lay a stick of dynamite, or fire a bullet.
 - toggle fullscreen: F1 ; zoom in/out: F2, F3.

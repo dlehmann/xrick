@@ -131,6 +131,7 @@ extern U8 syskbd_pause;
 extern U8 syskbd_end;
 extern U8 syskbd_xtra;
 extern U8 syskbd_fire;
+extern U8 syskbd_coin;
 
 /*
  * sound section
@@ -162,6 +163,7 @@ extern bool sysarg_args_nosound;
 extern int sysarg_args_vol;
 #endif /* ENABLE_ SOUND */
 extern const char *sysarg_args_data;
+extern bool sysarg_args_coins;
 #ifdef ENABLE_LANG_FILE
 extern const char *sysarg_args_lang;
 #endif /* ENABLE_LANG_FILE */

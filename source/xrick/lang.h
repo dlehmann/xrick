@@ -30,6 +30,8 @@ extern U8 *lang_imaptext[LANG_NBR_IMAPTEXT];
 extern U8 *lang_gameovertxt;
 extern U8 *lang_pausedtxt;
 extern U8 *lang_getnametxt;
+extern U8 *lang_insertcointxt;
+extern U8 *lang_creditstxt;
 
 extern bool lang_load(const char *);
 
