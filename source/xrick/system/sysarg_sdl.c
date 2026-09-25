@@ -77,63 +77,82 @@ static void sysarg_version(void)
 }
 
 /*
- * Help
+ * Help, printed in parts: sys_printf formats into a buffer of limited size
  */
 static void sysarg_help(void)
 {
-   sys_printf(
-       "Usage: xrick [option(s)]\n"
-       " The options are:\n\n"
-       "  -h, --help         Display this information\n"
-       "  --fullscreen       Run in fullscreen mode.\n"
-       "                     The default is to run in a window.\n"
-       "  --speed <speed>    Run at speed <speed>. <speed> must be \n"
-       "                     an integer between 1 (fast) and 100 (slow).\n"
-       "                     The default is %d.\n"
-       "  --zoom <zoom>      Display with zoom factor <zoom>.\n"
-       "                     <zoom> must be an integer between 1 (320x200)\n"
-       "                     and %d (%d times bigger). The default is %d.\n"
-       "  --map <map>        Start at map number <map>.\n"
-       "                     <map> must be an integer between 1 and %d.\n"
-       "                     The default is to start at map number 1.\n"
-       "  --submap <submap>  Start at submap <submap>.\n"
-       "                     <submap> must be an integer between 1 and %d.\n"
-       "                     The default is to start at submap number 1\n"
-       "                     or, if a map was specified,\n"
-       "                     at the first submap of that map.\n"
-       "  --keys <left>-<right>-<up>-<down>-<fire>\n"
-       "                     Override the default key bindings\n"
-       "                     (cf. KeyCodes), e.g. \"a-d-w-s-SPACE\".\n"
-       "                     The arrow keys always work too.\n"
-       "  --data <archive>   Use data archive <archive>\n"
-       "                     <archive> must be either a zip file or\n"
-       "                     a directory. The default is to look for \"data.zip\"\n"
-       "                     in the directory where xrick is run from.\n"
-#ifdef ENABLE_SOUND
-       "  --nosound          Disable sounds.\n"
-       "                     The default is to play with sounds enabled.\n"
-       "  --vol <vol>        Play sounds at volume <vol>.\n"
-       "                     <vol> must be an integer between 0 (silence)\n"
-       "                     and %d (max). The default is to play sounds\n"
-       "                     at maximum volume (%d).\n"
-#endif /* ENABLE_SOUND */
-       "  --coins            Arcade mode: a game needs a coin, inserted\n"
-       "                     with the C key. Each coin is good for one\n"
-       "                     game; coins inserted while playing are kept\n"
-       "                     for the next games.\n"
+    sys_printf(
+        "Usage: xrick [option(s)]\n"
+        "\n"
+        "Start xrick from the directory that holds data.zip, or tell it where\n"
+        "the data is with --data. The README explains everything in detail.\n"
+        "\n"
+        "General:\n"
+        "  -h, --help         Print this information and exit.\n"
+        "  --version          Print the version and exit.\n"
+        "\n");
+    sys_printf(
+        "Display:\n"
+        "  --fullscreen       Start in fullscreen mode instead of a window.\n"
+        "                     F1 switches while playing.\n"
+        "  --zoom <zoom>      Window size: the game's 320x200 pixels times\n"
+        "                     <zoom>, from 1 to %d. The default is %d.\n"
+        "                     F2 and F3 zoom out and in while playing.\n"
+        "\n",
+        SYSVID_MAXZOOM, SYSVID_ZOOM);
+    sys_printf(
+        "Game:\n"
+        "  --speed <speed>    Time between two frames in milliseconds, from\n"
+        "                     1 (fastest) to 100 (slowest). The default is %d.\n"
+        "  --map <map>        Start at world <map>, from 1 to %d:\n"
+        "                     1 South America, 2 Egypt, 3 castle, 4 missile\n"
+        "                     base. The default is 1.\n"
+        "  --submap <submap>  Start at submap <submap>, from 1 to %d. This\n"
+        "                     also chooses the world, so it overrides --map.\n"
+        "  --coins            Arcade mode: every game needs a coin, inserted\n"
+        "                     with the C key (up to 99). A coin inserted on\n"
+        "                     the start screen starts a game; with coins left,\n"
+        "                     fire starts one. Coins are lost at exit.\n"
+        "\n",
+        GAME_PERIOD, 5/*MAP_NBR_MAPS*/-1, 47/*MAP_NBR_SUBMAPS*/);
+    /* TODO: remove hardcoded map/submap max counts because they are now loaded from resource files */
+    sys_printf(
+        "Keys:\n"
+        "  --keys <left>-<right>-<up>-<down>-<fire>\n"
+        "                     Keys for the five game controls, as key names\n"
+        "                     (see assets/docs/KeyCodes), not case sensitive.\n"
+        "                     The default is z-x-o-k-SPACE. Examples:\n"
+        "                       --keys a-d-w-s-SPACE\n"
+        "                       --keys LEFT-RIGHT-UP-DOWN-LCTRL\n"
+        "                       --keys KP4-KP6-KP8-KP2-KP0\n"
+        "                     The arrow keys always work too. Fixed keys:\n"
+        "                     P pause, E end game, ESC quit, C coin, F1-F3\n"
+        "                     display, F4-F6 sound, F7-F9 cheats.\n"
+        "\n");
+    sys_printf(
+        "Data and files:\n"
+        "  --data <archive>   The game data: a zip file, or a directory with\n"
+        "                     the unpacked data. The default is data.zip in\n"
+        "                     the directory where xrick is run from.\n"
+        "                     highscores.txt and lang/ are looked for in the\n"
+        "                     same directory as the zip file (or in the data\n"
+        "                     directory itself).\n"
 #ifdef ENABLE_LANG_FILE
-       "  --lang <lang>      Show the in-game texts in language <lang>,\n"
-       "                     read from lang/<lang>.txt in the directory\n"
-       "                     of the data archive, e.g. \"--lang de\".\n"
-       "                     The default is \"en\".\n"
+        "  --lang <code>      Language of the in-game texts, read from\n"
+        "                     lang/<code>.txt next to the data, e.g.\n"
+        "                     --lang de for German. The default is en.\n"
 #endif /* ENABLE_LANG_FILE */
-       "  --version          Print version information.\n\n",
-       GAME_PERIOD, SYSVID_MAXZOOM, SYSVID_MAXZOOM, SYSVID_ZOOM, 5/*MAP_NBR_MAPS*/-1, 47/*MAP_NBR_SUBMAPS*/
+        "\n");
 #ifdef ENABLE_SOUND
-       , SYSSND_MAXVOL, SYSSND_MAXVOL
+    sys_printf(
+        "Sound:\n"
+        "  --nosound          Start without sound. F4 mutes while playing.\n"
+        "  --vol <vol>        Volume at start, from 0 (silent) to %d. The\n"
+        "                     default is %d. F5 and F6 change it while\n"
+        "                     playing.\n"
+        "\n",
+        SYSSND_MAXVOL, SYSSND_MAXVOL);
 #endif /* ENABLE_SOUND */
-       );
-   /* TODO: remove hardcoded map/submap max counts because they are now loaded from resource files */
 }
 
 /*
