@@ -173,35 +173,35 @@ static bool sysarg_scankeys(const char *keys)
   i = 0;
 
   j = 0;
-  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < sizeof k) k[j++] = keys[i++];
+  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < (int)sizeof k) k[j++] = keys[i++];
   if (keys[i++] == '\0') return false;
   k[j] = '\0';
   syskbd_left = sysarg_sdlcode(k);
   if (!syskbd_left) return false;
 
   j = 0;
-  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < sizeof k) k[j++] = keys[i++];
+  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < (int)sizeof k) k[j++] = keys[i++];
   if (keys[i++] == '\0') return false;
   k[j] = '\0';
   syskbd_right = sysarg_sdlcode(k);
   if (!syskbd_right) return false;
 
   j = 0;
-  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < sizeof k) k[j++] = keys[i++];
+  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < (int)sizeof k) k[j++] = keys[i++];
   if (keys[i++] == '\0') return false;
   k[j] = '\0';
   syskbd_up = sysarg_sdlcode(k);
   if (!syskbd_up) return false;
 
   j = 0;
-  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < sizeof k) k[j++] = keys[i++];
+  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < (int)sizeof k) k[j++] = keys[i++];
   if (keys[i++] == '\0') return false;
   k[j] = '\0';
   syskbd_down = sysarg_sdlcode(k);
   if (!syskbd_down) return false;
 
   j = 0;
-  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < sizeof k) k[j++] = keys[i++];
+  while (keys[i] != '\0' && keys[i] != '-' && j + 1 < (int)sizeof k) k[j++] = keys[i++];
   if (keys[i] != '\0') return false;
   k[j] = '\0';
   syskbd_fire = sysarg_sdlcode(k);

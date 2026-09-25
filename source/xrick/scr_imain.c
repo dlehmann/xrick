@@ -252,8 +252,10 @@ screen_introMain(void)
             draw_filter = 0x5555;
 #endif
             for (i = 0; i < screen_nbr_hiscores; i++) {
-                sys_snprintf((char *)s, sizeof(s), "%06d@@@====@@@%s",
-                    screen_highScores[i].score, screen_highScores[i].name);
+                sys_snprintf((char *)s, sizeof(s), "%06u@@@====@@@",
+                    (unsigned)screen_highScores[i].score);
+                /* names are not null terminated */
+                memcpy(s + 16, screen_highScores[i].name, HISCORE_NAME_SIZE);
                 s[26] = (U8)'\377';
                 s[27] = (U8)'\377';
                 s[28] = (U8)'\376';

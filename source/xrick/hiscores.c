@@ -23,8 +23,8 @@
  *
  * Lines that are empty or start with '#' are ignored. Names are upper
  * cased and may contain A-Z, 0-9, '.' and spaces; any other character
- * becomes a space. Entries are sorted by score. If the file lacks
- * entries, the remaining slots are cleared. If the file does not exist,
+ * becomes a space. Entries are sorted by score and only the best ones
+ * are kept. If the file lacks entries, the remaining slots are cleared. If the file does not exist,
  * the hall of fame starts empty and the file is created, so deleting it
  * resets the high scores.
  */
@@ -66,12 +66,18 @@ hiscores_load(void)
   char line[128];
   char *s, *end;
   unsigned long score;
-  size_t n, i, j;
-  hiscore_t tmp;
+  size_t i, j;
+  hiscore_t entry;
 
-  n = 0;
+  /* start with empty slots, entries from the file push them out */
+  for (i = 0; i < screen_nbr_hiscores; i++) {
+    screen_highScores[i].score = 0;
+    for (j = 0; j < HISCORE_NAME_SIZE; j++)
+      screen_highScores[i].name[j] = NAME_BLANK;
+  }
+
   fp = fopen(HISCORES_FILE, "r");
-  while (fp && n < screen_nbr_hiscores && fgets(line, sizeof(line), fp)) {
+  while (fp && fgets(line, sizeof(line), fp)) {
     s = line;
     while (isspace((unsigned char)*s)) s++;
     if (*s == '\0' || *s == '#') continue;
@@ -89,27 +95,22 @@ hiscores_load(void)
     while (*s == ' ' || *s == '\t') s++;
     for (i = 0; i < HISCORE_NAME_SIZE; i++) {
       if (*s == '\0' || *s == '\n' || *s == '\r')
-        screen_highScores[n].name[i] = NAME_BLANK;
+        entry.name[i] = NAME_BLANK;
       else
-        screen_highScores[n].name[i] = name_fromText((unsigned char)*s++);
+        entry.name[i] = name_fromText((unsigned char)*s++);
     }
-    screen_highScores[n].score = (U32)score;
-    n++;
-  }
+    entry.score = (U32)score;
 
-  /* clear slots missing from the file */
-  for (i = n; i < screen_nbr_hiscores; i++) {
-    screen_highScores[i].score = 0;
-    for (j = 0; j < HISCORE_NAME_SIZE; j++)
-      screen_highScores[i].name[j] = NAME_BLANK;
-  }
-
-  /* inserting a new score expects them sorted, highest first */
-  for (i = 1; i < screen_nbr_hiscores; i++) {
-    tmp = screen_highScores[i];
-    for (j = i; j > 0 && screen_highScores[j - 1].score < tmp.score; j--)
-      screen_highScores[j] = screen_highScores[j - 1];
-    screen_highScores[j] = tmp;
+    /*
+     * keep the best entries, sorted highest first as inserting a new
+     * score expects; the lowest one drops out
+     */
+    for (j = screen_nbr_hiscores; j > 0 &&
+         screen_highScores[j - 1].score < entry.score; j--)
+      if (j < screen_nbr_hiscores)
+        screen_highScores[j] = screen_highScores[j - 1];
+    if (j < screen_nbr_hiscores)
+      screen_highScores[j] = entry;
   }
 
   if (fp)

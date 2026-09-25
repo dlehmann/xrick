@@ -616,7 +616,7 @@ static void unloadResourceTilesData()
 static bool loadImage(file_t fp, img_t ** image)
 {
     U16 u16Temp;
-    size_t pixelCount, colorCount;
+    size_t pixelCount, colorCount = 0;
     resource_pic_t dataTemp;
     img_t * imgTemp;
     void * vp;

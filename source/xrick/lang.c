@@ -101,14 +101,14 @@ static U8 pressfire_buf[IMAP_WIDTH + 1];
 static char sec_lines[IMAP_LINES][LINE_SIZE];
 static int sec_nbr_lines;
 
+static bool keep_hash = false;  /* keep '#' number placeholders */
+
 
 /*
  * Convert a UTF-8 line to game tiles
  *
  * return: number of tiles
  */
-static bool keep_hash = false;  /* keep '#' number placeholders */
-
 static size_t
 to_tiles(const char *s, U8 *tiles, size_t max)
 {
