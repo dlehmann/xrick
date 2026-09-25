@@ -11,7 +11,7 @@
 # You must not remove this notice, or any other, from this software.
 #
 
-cmake_minimum_required(VERSION 2.8.5)
+cmake_minimum_required(VERSION 3.10)
 
 project(data_extractor C)
 
