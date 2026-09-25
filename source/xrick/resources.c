@@ -423,7 +423,7 @@ static bool loadResourceImaptext(file_t fp)
     screen_nbr_imaptext = letoh16(u16Temp);
 
     screen_imaptext = sysmem_push(screen_nbr_imaptext * sizeof(*screen_imaptext));
-    if (!screen_imapsteps)
+    if (!screen_imaptext)
     {
         return false;
     }

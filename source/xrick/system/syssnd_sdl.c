@@ -387,6 +387,10 @@ void syssnd_load(sound_t *sound)
 
     /* alloc context */
     context = malloc(sizeof(SDL_RWops));
+    if (!context)
+    {
+        return;
+    }
     context->seek = sdlRWops_seek;
     context->read = sdlRWops_read;
     context->write = sdlRWops_write;
@@ -485,6 +489,7 @@ static int
 sdlRWops_close(SDL_RWops *context)
 {
     sysfile_close((file_t)(context->hidden.unknown.data1));
+    free(context);  /* allocated by syssnd_load */
     return 0;
 }
 

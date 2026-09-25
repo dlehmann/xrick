@@ -186,7 +186,7 @@ screen_getname(void)
                 {  /* end: insert the score, lower ones move down */
                     i = 0;
                     while (game_score < screen_highScores[i].score) i++;
-                    j = 7;
+                    j = (U8)(screen_nbr_hiscores - 1);
                     while (j > i)
                     {
                         screen_highScores[j].score = screen_highScores[j - 1].score;

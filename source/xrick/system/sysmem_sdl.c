@@ -87,7 +87,7 @@ void *sysmem_push(size_t size)
         return NULL;
     }
 
-    alignedPtr = (((uintptr_t)stackTop) + sizeof(size_t) + ALIGNMENT) & ~((uintptr_t)(ALIGNMENT - 1));
+    alignedPtr = (((uintptr_t)stackTop) + sizeof(size_t) + ALIGNMENT - 1) & ~((uintptr_t)(ALIGNMENT - 1));
 
     allocatedSizePtr = (size_t *)(alignedPtr);
     allocatedSizePtr[-1] = neededSize;
@@ -126,7 +126,7 @@ void sysmem_pop(void * alignedPtr)
     stackSize -= allocatedSize;
 
     IFDEBUG_MEMORY(
-        if ((uintptr_t)alignedPtr != ((((uintptr_t)stackTop) + sizeof(size_t) + ALIGNMENT) & ~((uintptr_t)(ALIGNMENT - 1))))
+        if ((uintptr_t)alignedPtr != ((((uintptr_t)stackTop) + sizeof(size_t) + ALIGNMENT - 1) & ~((uintptr_t)(ALIGNMENT - 1))))
         {
             sys_error("(memory) tried to release a wrong block");
             return;

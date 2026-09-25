@@ -69,7 +69,7 @@ devtools_run(void)
   case 1:  /* draw tiles */
     sysvid_clear();
     draw_tilesBank = 0;
-    sys_snprintf(s, sizeof(s), "TILES@BANK@%d\376", pos);
+    sys_snprintf((char *)s, sizeof(s), "TILES@BANK@%d\376", pos);
     draw_setfb(4, 4);
     draw_tilesListImm(s);
     k = 0;
@@ -118,7 +118,7 @@ devtools_run(void)
   case 21:  /* draw sprites */
     sysvid_clear();
     draw_tilesBank = 0;
-    sys_snprintf(s, sizeof(s), "SPRITES\376");
+    sys_snprintf((char *)s, sizeof(s), "SPRITES\376");
     draw_setfb(4, 4);
     draw_tilesListImm(s);
     for (i = 0; i < 8; i++) {  /* column numbers */
@@ -182,7 +182,7 @@ devtools_run(void)
 #ifdef GFXST
     if (pos2 == 0) pos2 = 1;
 #endif
-    sys_snprintf(s, sizeof(s), "BLOCKS@%#04X@TO@%#04X@WITH@BANK@%d\376",
+    sys_snprintf((char *)s, sizeof(s), "BLOCKS@%#04X@TO@%#04X@WITH@BANK@%d\376",
         pos, pos + 4*8-1, pos2);
     draw_setfb(4, 4);
     draw_tilesBank = 0;
