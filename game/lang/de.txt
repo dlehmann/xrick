@@ -81,7 +81,7 @@ Pause
 Bitte Namen eingeben
 
 [insertcoin]
-Münze einwerfen
+Geld einwerfen
 
 [credits]
 Credits

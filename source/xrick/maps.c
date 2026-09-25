@@ -157,18 +157,28 @@ map_eflg_expand(U8 offs)
   }
 
   /*
-   * Wooden beams of page 0 (posts, bridges, braces, stakes) are
+   * Wooden beams (posts, bridges, braces, stakes) and pillars are
    * foreground tiles in the ST data, hiding entities behind them. In the
    * Amiga version entities walk in front of them, so clear the flag.
+   * Page 0 holds the tiles of South America and Egypt, page 1 those of
+   * the castle and the missile base.
    */
-  if (offs == 0) {
-    static const U8 beams[][2] = {  /* inclusive tile ranges */
-      { 0x5b, 0x5c }, { 0x5e, 0x5e }, { 0x66, 0x67 }, { 0xa0, 0xa0 },
-      { 0xad, 0xbb }, { 0xbe, 0xc7 }
+  {
+    static const struct { U8 page, first, last; } front[] = {
+      { 0, 0x5b, 0x5c }, { 0, 0x5e, 0x5e },  /* wooden beams */
+      { 0, 0x66, 0x67 }, { 0, 0xa0, 0xa0 },
+      { 0, 0xad, 0xbb }, { 0, 0xbe, 0xc7 },
+      { 0, 0x68, 0x68 },  /* thin wrapped pillars (Egypt) */
+      { 0, 0x6a, 0x75 },  /* carved pillars (Egypt) */
+      { 0, 0x76, 0x84 },  /* hieroglyph columns (Egypt) */
+      { 0, 0x85, 0x90 },  /* stone pillars (South America) */
+      { 0, 0x91, 0x9c },  /* columns with capitals (Egypt) */
+      { 1, 0x79, 0x7c }   /* stone pillars (castle) */
     };
-    for (i = 0; i < sizeof(beams) / sizeof(beams[0]); i++)
-      for (k = beams[i][0]; k <= beams[i][1]; k++)
-        map_eflg[k] &= ~MAP_EFLG_FGND;
+    for (i = 0; i < sizeof(front) / sizeof(front[0]); i++)
+      if (front[i].page == offs >> 4)
+        for (k = front[i].first; k <= front[i].last; k++)
+          map_eflg[k] &= ~MAP_EFLG_FGND;
   }
 }
 

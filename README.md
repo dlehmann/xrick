@@ -9,7 +9,8 @@ This version adds a few things to the original xrick:
 - the high scores are kept in an editable text file,
 - the in-game texts can be translated, English and German come with it,
 - an arcade mode where every game needs a coin,
-- entities walk in front of wooden beams, like in the Amiga version.
+- Rick and the enemies walk in front of wooden beams and pillars, like in
+  the Amiga version.
 
 Contents:
 
