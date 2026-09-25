@@ -13,6 +13,10 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Game over screen
+ */
+
 #include "xrick/screens.h"
 #include "xrick/lang.h"
 
@@ -22,17 +26,18 @@
 #include "xrick/system/system.h"
 
 /*
- * Display the game over screen
+ * Display the game over screen: the banner over the game (PC) or alone
+ * (ST, which also ends it after a while), until fire is pressed
  *
  * return: SCREEN_RUNNING, SCREEN_DONE, SCREEN_EXIT
  */
 U8
 screen_gameover(void)
 {
-    static U8 seq = 0;
-    static U8 period = 0;
+    static U8 seq = 0;     /* step of the screen */
+    static U8 period = 0;  /* game period to restore when done */
 #ifdef GFXST
-    static U32 tm = 0;
+    static U32 tm = 0;     /* time the banner was shown */
 #endif
     if (seq == 0) {
         draw_tilesBank = 0;

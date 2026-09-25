@@ -1,3 +1,5 @@
+/* xrick splash image (included by main.c) */
+
 static U8 IMG_SPLASH_PIXELS[] = {
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

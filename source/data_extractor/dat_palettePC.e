@@ -1,3 +1,5 @@
+/* game palette of the PC version, CGA colors (included by main.c) */
+
 enum { GAME_COLOR_COUNT = 8 };
 
 static img_color_t GAME_COLORS[GAME_COLOR_COUNT] = {

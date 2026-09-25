@@ -13,6 +13,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Utilities: collision tests between entities and with the map, and
+ * string duplication.
+ */
+
 #include "xrick/util.h"
 
 #include "xrick/config.h"
@@ -188,6 +193,8 @@ u_envtest(S16 x, S16 y, bool crawl, U8 *rc0, U8 *rc1)
  * Check if x,y is within e trigger box.
  *
  * ASM 126F
+ * e: entity whose trigger box to test
+ * x, y: point to test (pixels, map)
  * return: false if not in box, true if in box.
  */
 bool
@@ -208,7 +215,8 @@ u_trigbox(U8 e, S16 x, S16 y)
 }
 
 /*
- * Custom implementation of strdup function
+ * Custom implementation of strdup function, allocating with sysmem_push
+ * (free with sysmem_pop)
  */
 char *
 u_strdup(const char *sourceStr)

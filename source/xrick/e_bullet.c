@@ -13,6 +13,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * The bullet: it flies straight in the direction Rick faces until it
+ * leaves the screen or hits a wall or something it kills.
+ */
+
 #include "xrick/e_bullet.h"
 
 #include "xrick/system/system.h"
@@ -23,11 +28,13 @@
 /*
  * public vars (for performance reasons)
  */
-S8 e_bullet_offsx;
-S16 e_bullet_xc, e_bullet_yc;
+S8 e_bullet_offsx;             /* horizontal speed, pixels per frame */
+S16 e_bullet_xc, e_bullet_yc;  /* center of the bullet (pixels, map) */
 
 /*
  * Initialize bullet
+ *
+ * x, y: position of Rick (pixels, map)
  */
 void
 e_bullet_init(U16 x, U16 y)

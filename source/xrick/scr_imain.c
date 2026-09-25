@@ -13,6 +13,12 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Main intro: the Rick Dangerous title and the hall of fame, alternating
+ * until a game starts. Also handles the coin mode (--coins) and the
+ * konami code that leads to the level select.
+ */
+
 #include "xrick/screens.h"
 
 #include "xrick/game.h"
@@ -145,17 +151,22 @@ konami_update(void)
 /*
  * Main introduction
  *
+ * The steps (seq) are: 0 start, 1-3 title (draw, wait, wait for release),
+ * 4-6 hall of fame (same), 7 start a game, 8 wait for fire released in
+ * coin mode, 9 go to the level select. Fire before any picture timed out
+ * shows the hall of fame first; after that it starts a game.
+ *
  * return: SCREEN_RUNNING, SCREEN_DONE, SCREEN_SELECT, SCREEN_EXIT
  */
 U8
 screen_introMain(void)
 {
-    static U8 seq = 0;
-    static U8 seen = 0;
-    static bool first = true;
-    static U8 period = 0;
-    static U32 tm = 0;
-    static unsigned coins_seen = 0;
+    static U8 seq = 0;            /* step, see above */
+    static U8 seen = 0;           /* pictures shown since the start */
+    static bool first = true;     /* first time since xrick started */
+    static U8 period = 0;         /* game period to restore when done */
+    static U32 tm = 0;            /* time the picture was drawn */
+    static unsigned coins_seen = 0;  /* coins when the screen started */
     bool newpic;
 
     if (seq == 0) {

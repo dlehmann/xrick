@@ -18,13 +18,16 @@
 
 #include "xrick/system/basic_types.h"
 
-extern U32 e_them_rndseed;
+/*
+ * "Them": the enemies and traps, see e_them.c
+ */
+extern U32 e_them_rndseed;  /* incremented every frame, feeds the randomizer */
 
-extern void e_them_t1a_action(U8);
-extern void e_them_t1b_action(U8);
-extern void e_them_t2_action(U8);
-extern void e_them_t3_action(U8);
-extern void e_them_z_action(U8);
+extern void e_them_t1a_action(U8);  /* walk back and forth */
+extern void e_them_t1b_action(U8);  /* walk towards Rick */
+extern void e_them_t2_action(U8);   /* walk, fall and climb towards Rick */
+extern void e_them_t3_action(U8);   /* triggered, scripted moves */
+extern void e_them_z_action(U8);    /* killed, falling off the screen */
 
 #endif /* ndef _E_THEM_H */
 

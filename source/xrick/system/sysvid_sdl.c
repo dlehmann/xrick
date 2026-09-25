@@ -13,6 +13,13 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Video, SDL version: an 8 bit paletted SDL surface, SYSVID_WIDTH by
+ * SYSVID_HEIGHT pixels times the zoom factor. The game draws into
+ * sysvid_fb; sysvid_update copies the changed parts to the surface,
+ * zooming them.
+ */
+
 #include "xrick/control.h"
 #include "xrick/draw.h"
 #include "xrick/game.h"
@@ -32,9 +39,9 @@ U8 *sysvid_fb; /* frame buffer */
 /*
  * Local variables
  */
-static SDL_Color palette[256];
+static SDL_Color palette[256];  /* current palette */
 static SDL_Surface *screen;
-static U32 videoFlags;
+static U32 videoFlags;  /* SDL video mode flags */
 static bool isVideoInitialised = false;
 
 static U8 zoom = SYSVID_ZOOM; /* actual zoom level */
@@ -52,7 +59,7 @@ static SDL_Surface *initScreen(U16 w, U16 h, U8 bpp, U32 flags)
 }
 
 /*
- *
+ * Set the palette again, after the video mode changed
  */
 static void sysvid_restorePalette()
 {
@@ -60,7 +67,7 @@ static void sysvid_restorePalette()
 }
 
 /*
- *
+ * Set the first n colors of the palette
  */
 void sysvid_setPalette(img_color_t *pal, U16 n)
 {
@@ -76,7 +83,7 @@ void sysvid_setPalette(img_color_t *pal, U16 n)
 }
 
 /*
- *
+ * Set the game palette, from the data archive
  */
 void sysvid_setGamePalette()
 {
@@ -84,7 +91,8 @@ void sysvid_setGamePalette()
 }
 
 /*
- * Initialize video modes
+ * Initialize video modes: find the zoom factor for fullscreen, from the
+ * smallest fullscreen mode that fits the game
  */
 static bool sysvid_chkvm(void)
 {
@@ -252,8 +260,11 @@ sysvid_shutdown(void)
 }
 
 /*
- * Update screen
+ * Update screen: copy the rectangles of the frame buffer to the SDL
+ * surface, each pixel zoom times in both directions
  * NOTE errors processing ?
+ *
+ * rects: list of rectangles to update (pixels, screen)
  */
 void
 sysvid_update(const rect_t *rects)
@@ -335,7 +346,9 @@ sysvid_clear(void)
 
 
 /*
- * Zoom
+ * Zoom, in a window only
+ *
+ * z: +1 to zoom in, -1 to zoom out
  */
 void
 sysvid_zoom(S8 z)

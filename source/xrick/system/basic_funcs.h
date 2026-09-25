@@ -11,6 +11,12 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Byte order conversion: htobe16/htole16/betoh16/letoh16 and their 32
+ * bit versions, from the system headers where available, else defined
+ * here. The data archive is little endian.
+ */
+
 #ifndef _BASIC_FUNCS_H
 #define _BASIC_FUNCS_H
 

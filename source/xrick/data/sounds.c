@@ -13,6 +13,10 @@
 
 #include "xrick/data/sounds.h"
 
+/*
+ * Sounds and tunes, loaded from the data archive by resources.c
+ */
+
 #ifdef ENABLE_SOUND
 
 #include <stddef.h> /* NULL */

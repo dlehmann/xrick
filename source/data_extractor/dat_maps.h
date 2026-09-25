@@ -11,6 +11,10 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Map data of the original game, see dat_maps.c
+ */
+
 #ifndef _DAT_MAPS_H
 #define _DAT_MAPS_H
 

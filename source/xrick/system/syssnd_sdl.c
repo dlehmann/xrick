@@ -13,6 +13,12 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Sound, SDL version: SYSSND_MIXCHANNELS channels of 8 bit mono samples,
+ * mixed in the SDL audio callback. Sounds are loaded from the data
+ * archive through an SDL_RWops that reads with sysfile_xxx.
+ */
+
 #include "xrick/config.h"
 
 #ifdef ENABLE_SOUND
@@ -31,13 +37,14 @@
  */
 const U8 syssnd_period = 0xff; /* not needed under current SDL implementation of xrick */
 
+/* scale a sample (centered on 0) to the volume */
 #define ADJVOL(S) (((S)*sndVol)/SDL_MIX_MAXVOLUME)
 
 /*
  * Local variables
  */
 static bool isAudioInitialised = false;
-static channel_t channel[SYSSND_MIXCHANNELS];
+static channel_t channel[SYSSND_MIXCHANNELS];  /* sounds playing */
 
 static U8 sndVol = SDL_MIX_MAXVOLUME;  /* internal volume */
 static U8 sndUVol = SYSSND_MAXVOL;  /* user-selected volume */
@@ -365,7 +372,7 @@ void syssnd_stopAll(void)
 }
 
 /*
- * Load a sound.
+ * Load a sound: read the samples of its WAVE file into sound->buf
  */
 void syssnd_load(sound_t *sound)
 {
@@ -413,7 +420,7 @@ void syssnd_load(sound_t *sound)
 }
 
 /*
- * Unload a sound
+ * Unload a sound: free its samples
  */
 void syssnd_free(sound_t *sound)
 {
@@ -437,7 +444,7 @@ void syssnd_update(void)
 }
 
 /*
- *
+ * SDL_RWops functions, reading a data file with sysfile_xxx
  */
 static int
 sdlRWops_open(SDL_RWops *context, char *name)

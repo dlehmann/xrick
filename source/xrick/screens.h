@@ -21,10 +21,15 @@
 
 #include <stddef.h> /* size_t */
 
-#define SCREEN_TIMEOUT 4000
-#define SCREEN_RUNNING 0
-#define SCREEN_DONE 1
-#define SCREEN_EXIT 2
+/*
+ * Screens: the splash screen, intros, level select, game over, name entry
+ * and pause. Each screen function is called once per frame, draws what
+ * changed and returns one of these codes.
+ */
+#define SCREEN_TIMEOUT 4000  /* time a screen shows without input, in ms */
+#define SCREEN_RUNNING 0     /* call again next frame */
+#define SCREEN_DONE 1        /* the screen is over */
+#define SCREEN_EXIT 2        /* exit requested */
 #define SCREEN_SELECT 3  /* level select requested (screen_introMain) */
 #define SCREEN_BACK 4    /* back to the main intro (screen_selectMap) */
 
@@ -34,12 +39,16 @@ typedef struct {
   U16 base;  /* base for sprite numbers table */
 } screen_imapsteps_t;  /* description of one step */
 
+/*
+ * One entry of the hall of fame
+ */
 enum { HISCORE_NAME_SIZE = 10 };
 typedef struct {
   U32 score;
-  U8 name[HISCORE_NAME_SIZE];
+  U8 name[HISCORE_NAME_SIZE];  /* tiles, '@' for blanks, not terminated */
 } hiscore_t;
 
+/* from the data archive, see resources.c; texts are tiles lists */
 extern size_t screen_nbr_imapsl;
 extern U8 *screen_imapsl;  /* sprite lists */
 

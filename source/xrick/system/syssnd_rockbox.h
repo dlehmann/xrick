@@ -22,6 +22,10 @@
  *
  ****************************************************************************/
 
+/*
+ * Sound, Rockbox version, see syssnd_rockbox.c
+ */
+
 #ifndef _SYSSND_ROCKBOX_H
 #define _SYSSND_ROCKBOX_H
 

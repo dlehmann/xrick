@@ -16,16 +16,18 @@
 /*
  * NOTES
  *
- * A tile consists in one column and 8 rows of 8 U16 (cga encoding, two
- * bits per pixel). The tl_tiles array contains all tiles, with the
- * following structure:
+ * A tile is 8 by 8 pixels, stored as 8 rows. On PC, a row is one U16
+ * (cga encoding, two bits per pixel); on ST, a row is one U32 (four bits
+ * per pixel, indexes in the game palette).
  *
- *  0x0000 - 0x00FF  tiles for main intro
- *  0x0100 - 0x01FF  tiles for map intro
- *  0x0200 - 0x0327  unused
- *  0x0328 - 0x0427  game tiles, page 0
- *  0x0428 - 0x0527  game tiles, page 1
- *  0x0527 - 0x05FF  unused
+ * tiles_data holds tiles_nbr_banks banks of 0x100 tiles each, and
+ * draw_tilesBank selects the bank that draw_tile uses:
+ *
+ *  PC: bank 0   main intro, texts and status bar
+ *      bank 1   map intro
+ *      bank 2+  game tiles, one bank per page (see map_tilesBank)
+ *  ST: bank 0   intros, texts and status bar
+ *      bank 1+  game tiles, one bank per page (see map_tilesBank)
  */
 
 #ifndef _TILES_H
@@ -62,8 +64,8 @@ typedef U32 tile_t[TILES_NBR_LINES];
  * tiles banks (each bank is 0x100 tiles)
  */
 enum { TILES_NBR_TILES = 0x100 };
-extern size_t tiles_nbr_banks;
-extern tile_t *tiles_data;
+extern size_t tiles_nbr_banks;  /* number of banks in tiles_data */
+extern tile_t *tiles_data;      /* all banks, one after the other */
 
 #endif /* ndef _TILES_H */
 

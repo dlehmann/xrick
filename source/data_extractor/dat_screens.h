@@ -11,6 +11,10 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Screen data of the original game, see dat_screens.c
+ */
+
 #ifndef _DAT_SCREENS_H
 #define _DAT_SCREENS_H
 

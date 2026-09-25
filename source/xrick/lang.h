@@ -21,8 +21,11 @@
 
 #ifdef ENABLE_LANG_FILE
 
-#define LANG_DIR "lang"
-#define LANG_DEFAULT "en"
+/*
+ * In-game texts from a language file, see lang.c
+ */
+#define LANG_DIR "lang"     /* next to the game data */
+#define LANG_DEFAULT "en"   /* language loaded without --lang */
 #define LANG_NBR_IMAPTEXT 5
 #define LANG_NBR_WORLDS 4
 
@@ -37,7 +40,7 @@ extern U8 *lang_worldtxt[LANG_NBR_WORLDS];
 extern U8 *lang_worldnumbertxt;
 extern U8 *lang_pressfiretxt;
 
-extern bool lang_load(const char *);
+extern bool lang_load(const char *);  /* load lang/<code>.txt */
 
 /* translated text if there is one, else the default text */
 #define LANG_TEXT(translated, text) ((translated) ? (translated) : (text))

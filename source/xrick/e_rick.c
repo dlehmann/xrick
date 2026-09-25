@@ -13,6 +13,18 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * NOTES
+ *
+ * Rick, controlled by the player: walks, jumps, crawls and climbs; with
+ * fire held, pokes with his stick (fire + left/right), shoots (fire + up)
+ * or lays dynamite (fire + down).
+ *
+ * Vertical speed is kept in offsy, in 1/256 pixels per frame, and the
+ * fraction of the position in ylow: gravity adds 0x80 to offsy every
+ * frame, up to 0x800.
+ */
+
 #include "xrick/e_rick.h"
 
 #include "xrick/system/system.h"
@@ -28,9 +40,9 @@
 /*
  * public vars
  */
-S16 e_rick_stop_x = 0;
+S16 e_rick_stop_x = 0;  /* tip of the stick while poking (pixels, map) */
 S16 e_rick_stop_y = 0;
-unsigned e_rick_state = 0;
+unsigned e_rick_state = 0;  /* e_rick_state_t bits */
 
 /*
 * public functions
@@ -43,16 +55,17 @@ extern inline bool e_rick_state_test(e_rick_state_t s);
 /*
  * local vars
  */
-static U8 scrawl;
+static U8 scrawl;  /* crawling during the previous frame */
 
-static bool trigger = false;
+static bool trigger = false;  /* fire + up held: one bullet per press */
 
-static S8 offsx;
-static U8 ylow;
-static S16 offsy;
+static S8 offsx;   /* horizontal speed when zombie */
+static U8 ylow;    /* fraction of y, 1/256 pixels */
+static S16 offsy;  /* vertical speed, 1/256 pixels per frame */
 
-static U8 seq;
+static U8 seq;  /* animation counter, for sprites and sounds */
 
+/* restart position, see e_rick_save */
 static U8 save_crawl, save_direction;
 static U16 save_x, save_y;
 
@@ -87,7 +100,8 @@ e_rick_boxtest(U8 e)
 
 
 /*
- * Go zombie
+ * Go zombie: rick is killed, jumps and falls off the screen. Does
+ * nothing with the "never die" cheat.
  *
  * ASM 1851
  */
@@ -114,7 +128,8 @@ e_rick_gozombie(void)
 
 
 /*
- * Action sub-function for e_rick when zombie
+ * Action sub-function for e_rick when zombie: fall until out of the
+ * screen, then rick is dead
  *
  * ASM 17DC
  */
@@ -144,7 +159,9 @@ e_rick_z_action(void)
 
 
 /*
- * Action sub-function for e_rick.
+ * Action sub-function for e_rick: move rick according to the controls
+ * and the map, and handle the fire combinations. Changing to another
+ * submap (walking off the left or right edge) sets game_chsm.
  *
  * ASM 13BE
  */
@@ -462,7 +479,8 @@ e_rick_action2(void)
 
 
 /*
- * Action function for e_rick
+ * Action function for e_rick: move, then choose the sprite and play the
+ * sounds that go with the state
  *
  * ASM 12CA
  */
@@ -532,6 +550,7 @@ void e_rick_action(U8 e/*unused*/)
         return;
     }
 
+    /* walking (or standing): cycle through the walk sprites */
     seq++;
 
     if (seq >= 0x14)
@@ -556,7 +575,7 @@ void e_rick_action(U8 e/*unused*/)
 
 
 /*
- * Save status
+ * Save status: where rick restarts after losing a life
  *
  * ASM part of 0x0BBB
  */
@@ -574,7 +593,7 @@ void e_rick_save(void)
 
 
 /*
- * Restore status
+ * Restore status saved by e_rick_save
  *
  * ASM part of 0x0BDC
  */

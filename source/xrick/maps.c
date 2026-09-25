@@ -43,8 +43,9 @@
 /*
  * global vars
  */
-U8 map_map[0x2C][0x20];
+U8 map_map[0x2C][0x20];  /* current portion of the submap */
 
+/* from the data archive, see resources.c */
 size_t map_nbr_maps = 0;
 map_t *map_maps = NULL;
 
@@ -67,8 +68,8 @@ size_t map_nbr_eflgc = 0;
 U8 *map_eflg_c = NULL;
 U8 map_eflg[0x100];
 
-U8 map_frow;
-U8 map_tilesBank;
+U8 map_frow;       /* map_map top row within the submap */
+U8 map_tilesBank;  /* tiles bank of the submap, see tiles.h */
 
 
 /*
@@ -113,7 +114,8 @@ map_expand(void)
 
 
 /*
- * Initialize a new submap
+ * Initialize a new submap: select its tiles and their flags, expand it
+ * to map_map, and create the entities of the visible and hidden rows
  *
  * ASM 0cc3
  */
@@ -138,9 +140,11 @@ map_init(void)
 
 
 /*
- * Expand entity flags for this map
+ * Expand entity flags for this map: map_eflg_c holds, for each tiles
+ * page, 8 pairs (count, flags) giving the flags of 0x100 tiles
  *
  * ASM 1117
+ * offs: offset of the page in map_eflg_c
  */
 void
 map_eflg_expand(U8 offs)

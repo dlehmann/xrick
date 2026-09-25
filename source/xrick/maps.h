@@ -36,7 +36,7 @@
 #define MAP_ROW_HBTOP 0x20
 #define MAP_ROW_HBBOT 0x27
 
-extern U8 map_map[0x2c][0x20];
+extern U8 map_map[0x2c][0x20];  /* tile numbers, rows of 0x20 tiles */
 
 /*
  * main maps
@@ -50,7 +50,7 @@ typedef struct {
 #endif
 } map_t;
 
-extern size_t map_nbr_maps;
+extern size_t map_nbr_maps;  /* the last one only marks the end */
 extern map_t *map_maps;
 
 /*
@@ -70,10 +70,10 @@ extern submap_t *map_submaps;
  * connections
  */
 typedef struct {
-  U8 dir;
-  U8 rowout;
-  U8 submap;
-  U8 rowin;
+  U8 dir;      /* LEFT or RIGHT; 0xff ends the connections of a submap */
+  U8 rowout;   /* row where rick leaves this submap */
+  U8 submap;   /* submap to go to; 0xff for the next map */
+  U8 rowin;    /* row where rick enters that submap */
 } connect_t;
 
 extern size_t map_nbr_connect;
@@ -95,12 +95,12 @@ extern block_t *map_blocks;
 #define MAP_MARK_NACT (0x80)
 
 /*
- * mark structure
+ * mark structure: where an entity appears in a submap
  */
 typedef struct {
-  U8 row;
-  U8 ent;
-  U8 flags;
+  U8 row;    /* row in the submap; 0xff ends the marks of a submap */
+  U8 ent;    /* entity type, | MAP_MARK_NACT */
+  U8 flags;  /* ENT_FLG_xxx */
   U8 xy;  /* bits XXXX XYYY (from b03) with X->x, Y->y */
   U8 lt;  /* bits XXXX XNNN (from b04) with X->trig_x, NNN->lat & trig_y */
 } mark_t;
@@ -124,7 +124,7 @@ extern U8 *map_bnums;
  * MAP_EFLG_FGND: foreground (hides entities).
  * MAP_EFLG_LETHAL: lethal (kill entities).
  * MAP_EFLG_CLIMB: entities can climb here.
- * MAP_EFLG_01:
+ * MAP_EFLG_01: unused
  */
 #define MAP_EFLG_VERT (0x80)
 #define MAP_EFLG_SOLID (0x40)
@@ -136,8 +136,8 @@ extern U8 *map_bnums;
 #define MAP_EFLG_01 (0x01)
 
 extern size_t map_nbr_eflgc;
-extern U8 *map_eflg_c;  /* compressed */
-extern U8 map_eflg[0x100];  /* current */
+extern U8 *map_eflg_c;  /* compressed, per tiles page: (count, flags) pairs */
+extern U8 map_eflg[0x100];  /* current, flags of each tile */
 
 /*
  * map_map top row within the submap
@@ -149,10 +149,10 @@ extern U8 map_frow;
  */
 extern U8 map_tilesBank;
 
-extern void map_expand(void);
-extern void map_init(void);
-extern bool map_chain(void);
-extern void map_resetMarks(void);
+extern void map_expand(void);  /* fill map_map from the blocks */
+extern void map_init(void);    /* initialize game_submap at map_frow */
+extern bool map_chain(void);   /* go to the next submap */
+extern void map_resetMarks(void);  /* make all marks active again */
 
 #endif /* ndef _MAPS_H */
 

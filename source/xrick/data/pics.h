@@ -22,17 +22,21 @@
 
 #include "xrick/system/basic_types.h"
 
+/*
+ * A picture in the Atari ST format: each U32 holds 8 pixels of 4 bits,
+ * indexes in the game palette
+ */
 typedef struct {
-  U16 width;
+  U16 width;     /* size in pixels */
   U16 height;
-  U16 xPos;
+  U16 xPos;      /* position on the screen */
   U16 yPos;
-  U32 *pixels;
+  U32 *pixels;   /* width / 8 * height U32, row by row */
 } pic_t;
 
-extern pic_t *pic_haf;
-extern pic_t *pic_congrats;
-extern pic_t *pic_splash;
+extern pic_t *pic_haf;       /* hall of fame title */
+extern pic_t *pic_congrats;  /* congratulations, on the name entry screen */
+extern pic_t *pic_splash;    /* Rick Dangerous title screen */
 
 #endif /* GFXST */
 

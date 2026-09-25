@@ -13,6 +13,21 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * NOTES
+ *
+ * The main loop and the game state machine. game_run calls frame() every
+ * game_period milliseconds; frame() runs the current state, and moves on
+ * to the next one, until a frame is ready to be shown.
+ *
+ * A game goes: main intro (INTRO_MAIN, or SELECT_MAP after the konami
+ * code), map intro (INTRO_MAP), then the play loop PLAY0 (entities act),
+ * PLAY1 (pause?), PLAY2 (dead? next submap?), PLAY3 (draw, scroll?),
+ * interrupted by scrolling, chaining to the next submap or map, and
+ * restarting after a lost life, until GAMEOVER and GETNAME (hall of
+ * fame), back to INIT_GAME.
+ */
+
 #include "xrick/game.h"
 
 #include "xrick/draw.h"
@@ -37,6 +52,7 @@
 /*
  * local typedefs
  */
+/* game states, see frame() */
 typedef enum {
 #ifdef ENABLE_DEVTOOLS
   DEVTOOLS,
@@ -55,6 +71,7 @@ typedef enum {
 /*
  * global vars
  */
+/* see game.h */
 U8 game_period = 0;
 bool game_waitevt = false;
 const rect_t *game_rects = NULL;
@@ -78,10 +95,10 @@ bool game_cheat3 = false;
 /*
  * local vars
  */
-static U8 isave_frow;
+static U8 isave_frow;  /* first visible map row at the restart position */
 static game_state_t game_state;
 #ifdef ENABLE_SOUND
-static sound_t *currentMusic = NULL;
+static sound_t *currentMusic = NULL;  /* tune playing now, if any */
 #endif
 
 
@@ -99,7 +116,9 @@ static void irestore(void);
 
 
 /*
- * Cheats
+ * Cheats: toggle a cheat mode, while playing only
+ *
+ * cheat: the cheat to toggle
  */
 #ifdef ENABLE_CHEATS
 void
@@ -143,7 +162,10 @@ game_toggleCheat(cheat_t cheat)
 
 #ifdef ENABLE_SOUND
 /*
- * Music
+ * Music: play a tune, stopping the one playing
+ *
+ * newMusic: tune to play, NULL to keep the current one
+ * loop: number of times to play it, -1 for ever
  */
 void
 game_setmusic(sound_t * newMusic, S8 loop)
@@ -163,6 +185,9 @@ game_setmusic(sound_t * newMusic, S8 loop)
     currentMusic = newMusic;
 }
 
+/*
+ * Stop the tune playing
+ */
 void
 game_stopmusic(void)
 {
@@ -172,7 +197,8 @@ game_stopmusic(void)
 #endif /*ENABLE_SOUND */
 
 /*
- * Main loop
+ * Main loop: load the data, then run frames, update the screen, process
+ * the events and feed the sound until the game exits
  */
 void
 game_run(void)
@@ -607,7 +633,8 @@ frame(void)
 
 
 /*
- * Initialize the game
+ * Initialize the game: lives, ammunition and score, then the map to
+ * start from (from the command line)
  */
 static void
 init(void)
@@ -663,7 +690,7 @@ init_map(U8 map, U8 submap)
   ent_ents[1].n = 0x01;
   ent_ents[1].sprite = 0x01;
   ent_ents[1].front = false;
-  ent_ents[ENT_ENTSNUM].n = 0xFF;
+  ent_ents[ENT_ENTSNUM].n = 0xFF;  /* end of the entities list */
 
   map_resetMarks();
 
@@ -673,8 +700,8 @@ init_map(U8 map, U8 submap)
 
 
 /*
- * play0
- *
+ * play0: first step of a play frame, end or exit if requested, else run
+ * the entities
  */
 static void
 play0(void)
@@ -697,8 +724,8 @@ play0(void)
 
 
 /*
- * play3
- *
+ * play3: last step of a play frame, draw the entities and the status bar,
+ * and scroll when rick gets too close to the top or bottom of the screen
  */
 static void
 play3(void)
@@ -727,8 +754,8 @@ play3(void)
 
 
 /*
- * restart
- *
+ * restart: after losing a life, restart at the position saved when
+ * entering the submap
  */
 static void
 restart(void)
@@ -751,8 +778,7 @@ restart(void)
 
 
 /*
- * isave (0bbb)
- *
+ * isave (0bbb): save the restart position
  */
 static void
 isave(void)
@@ -763,8 +789,7 @@ isave(void)
 
 
 /*
- * irestore (0bdc)
- *
+ * irestore (0bdc): go back to the restart position
  */
 static void
 irestore(void)

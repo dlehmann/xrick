@@ -13,6 +13,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Files, SDL version: the data files are read from a zip archive
+ * (ENABLE_ZIP) or from a directory, given with --data.
+ */
+
 #include "xrick/system/system.h"
 
 #ifdef ENABLE_ZIP
@@ -69,7 +74,10 @@ static int str_hasZipExtension(const char *);
 static char *str_toNativeSeparators(char *);
 
 /*
+ * Set the data archive, or directory, to read the data files from
  *
+ * name: path of a zip file or of a directory
+ * return: false if the zip file can not be opened
  */
 bool
 sysfile_setRootPath(const char *name)
@@ -101,7 +109,7 @@ sysfile_setRootPath(const char *name)
 }
 
 /*
- *
+ * Close the data archive
  */
 void
 sysfile_clearRootPath()
@@ -119,6 +127,10 @@ sysfile_clearRootPath()
 
 /*
  * Open a data file.
+ *
+ * name: file name, relative to the data archive or directory
+ * return: the file, NULL on error. Only one file can be open at a time
+ *         in a zip archive.
  */
 file_t
 sysfile_open(const char *name)
@@ -152,7 +164,7 @@ sysfile_open(const char *name)
 }
 
 /*
- *
+ * Size of a file, -1 if unknown (not implemented for zip archives)
  */
 off_t
 sysfile_size(file_t file)
@@ -314,7 +326,9 @@ str_hasZipExtension(const char *name)
 #endif /* ENABLE_ZIP */
 
 /*
+ * Convert '/' to '\\' on Windows, in place
  *
+ * return: s
  */
 static char *
 str_toNativeSeparators(char *s)

@@ -18,7 +18,10 @@
 
 #include "xrick/config.h"
 
-/* define IFDEBUG macros */
+/*
+ * IFDEBUG_xxx(code) compiles code only when the DEBUG_xxx option is set
+ * in config.h, e.g. IFDEBUG_MEMORY(sys_printf("...\n"););
+ */
 #ifdef DEBUG_MEMORY
 #define IFDEBUG_MEMORY(X); X
 #else

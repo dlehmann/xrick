@@ -13,6 +13,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Map intro: before each map, a text about it and a small animation of
+ * rick travelling there. The level select screen reuses the animation.
+ */
+
 #include "xrick/screens.h"
 #include "xrick/lang.h"
 
@@ -28,6 +33,7 @@
 /*
  * local vars
  */
+/* animation, see screen_imapsteps */
 static U16 step;              /* current step */
 static U16 count;             /* number of loops for current step */
 static U16 run;               /* 1 = run, 0 = no more step */
@@ -55,6 +61,10 @@ static void init(void);
  * Map introduction
  *
  * ASM: 1948
+ *
+ * The text and first picture are drawn once (seq 0), then the animation
+ * runs in three alternating steps (seq 1 to 3) until fire is pressed and
+ * released (seq 4, 5).
  *
  * return: SCREEN_RUNNING, SCREEN_DONE, SCREEN_EXIT
  */
@@ -156,6 +166,7 @@ screen_introMap(void)
 #define SELECT_PROMPT_Y 152
 #define TILE_ARROW '\074'     /* left arrow, mirrored for the right one */
 
+/* world names, when the language file has none */
 static U8 *select_titles[SELECT_NBR_MAPS] = {
   (U8 *)"SOUTH@AMERICA@1945\376", (U8 *)"EGYPT\376",
   (U8 *)"EUROPE,@CASTLE\376", (U8 *)"EUROPE,@MISSILE@BASE\376"
@@ -281,7 +292,8 @@ select_draw(void)
 U8
 screen_selectMap(void)
 {
-  static U8 sel = 0;
+  static U8 sel = 0;          /* 0 start, 1-3 animation, 4 wait for fire
+                                 released, 5 start the game */
   static U8 map0;             /* map to restore when going back */
   static unsigned prev;       /* controls of the previous frame */
   static unsigned coins_seen; /* coins when the screen was entered */
@@ -497,7 +509,7 @@ anim(void)
 
 
 /*
- * Initialize (0x1A43)
+ * Initialize (0x1A43): start the animation of game_map
  *
  */
 static void

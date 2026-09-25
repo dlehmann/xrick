@@ -11,6 +11,12 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Memory, SDL version: a stack allocator in a static buffer. Each block
+ * is preceded by its size, so that sysmem_pop can release it; blocks
+ * must be released in the reverse order of allocation.
+ */
+
 #include "xrick/system/system.h"
 #include "xrick/debug.h"
 
@@ -23,8 +29,8 @@ enum
     ALIGNMENT = sizeof(void*)  /* this is more of an educated guess; might want to adjust for your specific architecture */
 };
 static U8 stackBuffer[STACK_MAX_SIZE];
-static U8 * stackTop;
-static size_t stackSize;
+static U8 * stackTop;  /* first free byte */
+static size_t stackSize;  /* bytes in use */
 static bool isMemoryInitialised = false;
 IFDEBUG_MEMORY( static size_t maxUsedMemory = 0; );
 

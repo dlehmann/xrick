@@ -13,6 +13,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Entities: creation from the map marks as they scroll into view,
+ * drawing, and dispatching of the per type action functions.
+ */
+
 #include "xrick/ents.h"
 
 #include "xrick/config.h"
@@ -35,12 +40,13 @@
 /*
  * global vars
  */
-ent_t ent_ents[ENT_ENTSNUM + 1];
+ent_t ent_ents[ENT_ENTSNUM + 1];  /* entity slots, see ents.h */
 
+/* from the data archive, see resources.c */
 size_t ent_nbr_entdata = 0;
 entdata_t *ent_entdata = NULL;
 
-rect_t *ent_rects = NULL;
+rect_t *ent_rects = NULL;  /* screen parts changed by ent_draw */
 
 size_t ent_nbr_sprseq = 0;
 U8 *ent_sprseq = NULL;
@@ -57,7 +63,7 @@ static bool ent_creat2(U8 *, U16);
 
 
 /*
- * Reset entities
+ * Reset entities: deactivate all of them but rick
  *
  * ASM 2520
  */
@@ -461,8 +467,8 @@ ent_draw(void)
 
 
 /*
- * Clear entities previous state
- *
+ * Clear entities previous state, so that the next ent_draw does not
+ * erase them (after the whole screen has been redrawn)
  */
 void
 ent_clprev(void)
@@ -474,7 +480,9 @@ ent_clprev(void)
 }
 
 /*
- * Table containing entity action function pointers.
+ * Table containing entity action function pointers, indexed by type
+ * (ent_ents[e].n without ENT_LETHAL); types from 0x18 are e_them type 3,
+ * see ent_action.
  */
 void (*ent_actf[])(U8) = {
   NULL,        /* 00 - zero means that the slot is free */
@@ -505,8 +513,7 @@ void (*ent_actf[])(U8) = {
 
 
 /*
- * Run entities action function
- *
+ * Run entities action function, once per frame
  */
 void
 ent_action(void)

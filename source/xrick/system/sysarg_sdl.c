@@ -14,6 +14,8 @@
  */
 
 /*
+ * Command line options, SDL version. "xrick --help" lists them.
+ *
  * 20021010 added test to prevent buffer overrun in -keys parsing.
  */
 
@@ -34,6 +36,7 @@
 #define strcasecmp _stricmp
 #endif
 
+/* key names for --keys, and their SDL key codes */
 typedef struct {
   char name[16];
   int code;
@@ -43,6 +46,7 @@ static sdlcodes_t sdlcodes[SDLK_LAST] = {
 #include "xrick/system/sdl_codes.e"
 };
 
+/* options, see system.h */
 int sysarg_args_period = 0;
 int sysarg_args_map = 0;
 int sysarg_args_submap = 0;
@@ -143,6 +147,9 @@ static void sysarg_fail(char *msg)
 
 /*
  * Get SDL key code
+ *
+ * k: key name, see sdl_codes.e
+ * return: key code, 0 if unknown
  */
 static int sysarg_sdlcode(char *k)
 {
@@ -163,7 +170,10 @@ static int sysarg_sdlcode(char *k)
 }
 
 /*
- * Scan key codes sequence
+ * Scan key codes sequence: <left>-<right>-<up>-<down>-<fire> key names,
+ * and set the syskbd_xxx key codes
+ *
+ * return: false if the sequence is invalid
  */
 static bool sysarg_scankeys(const char *keys)
 {
@@ -212,6 +222,8 @@ static bool sysarg_scankeys(const char *keys)
 
 /*
  * Read and process arguments
+ *
+ * return: false to exit xrick (error, help or version)
  */
 bool
 sysarg_init(int argc, char **argv)
@@ -362,7 +374,11 @@ sysarg_init(int argc, char **argv)
     *       (after these have been loaded from resource files).
     */
 
-    /* this is dirty (sort of) */
+    /*
+     * this is dirty (sort of): find the map of the submap; the first
+     * submaps of maps 2 to 4 are 9, 20 and 38, and starting there is
+     * the same as starting at the map
+     */
     if (sysarg_args_submap > 0 && sysarg_args_submap < 9)
     {
         sysarg_args_map = 0;

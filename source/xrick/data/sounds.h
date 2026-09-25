@@ -20,11 +20,14 @@
 
 #include "xrick/system/basic_types.h"
 
+/*
+ * A sound, as a WAVE file inside the data archive
+ */
 typedef struct {
-  char *name;
-  U8 *buf;
-  U32 len;
-  bool dispose;
+  char *name;    /* file name in the data archive */
+  U8 *buf;       /* samples, when loaded (see syssnd_load) */
+  U32 len;       /* number of bytes in buf */
+  bool dispose;  /* free buf after playing, false for cached sounds */
 } sound_t;
 
 enum
@@ -36,6 +39,9 @@ enum
     Wave_BITS_PER_SAMPLE = 8,
 };
 
+/*
+ * Header of a WAVE file, all numbers little endian
+ */
 typedef struct {
     /* "RIFF" chunk descriptor */
     U8 riffChunkId[4];
@@ -55,30 +61,33 @@ typedef struct {
     U8 dataChunkSize[4];
 } wave_header_t;
 
-/* apparently there are 10 entity sounds in original game (ref. "e_them.c" notes)? However we only have 9 so far... */
+/*
+ * apparently there are 10 entity sounds in the original game (see the
+ * e_them.c notes), however we only have 9 so far
+ */
 enum { SOUNDS_NBR_ENTITIES = 10 };
 
-extern sound_t *soundBombshht;
-extern sound_t *soundBonus;
-extern sound_t *soundBox;
-extern sound_t *soundBullet;
-extern sound_t *soundCrawl;
-extern sound_t *soundDie;
-extern sound_t *soundEntity[SOUNDS_NBR_ENTITIES];
-extern sound_t *soundExplode;
-extern sound_t *soundGameover;
-extern sound_t *soundJump;
-extern sound_t *soundPad;
-extern sound_t *soundSbonus1;
-extern sound_t *soundSbonus2;
-extern sound_t *soundStick;
-extern sound_t *soundTune0;
-extern sound_t *soundTune1;
-extern sound_t *soundTune2;
+extern sound_t *soundBombshht;  /* dynamite fuse burning */
+extern sound_t *soundBonus;     /* bonus picked up */
+extern sound_t *soundBox;       /* box of bullets or dynamite picked up */
+extern sound_t *soundBullet;    /* bullet fired */
+extern sound_t *soundCrawl;     /* Rick crawling */
+extern sound_t *soundDie;       /* Rick dies */
+extern sound_t *soundEntity[SOUNDS_NBR_ENTITIES];  /* enemies, traps */
+extern sound_t *soundExplode;   /* dynamite explodes */
+extern sound_t *soundGameover;  /* game over tune */
+extern sound_t *soundJump;      /* Rick jumps */
+extern sound_t *soundPad;       /* Rick bounces on a super pad */
+extern sound_t *soundSbonus1;   /* special bonus countdown starts */
+extern sound_t *soundSbonus2;   /* special bonus won */
+extern sound_t *soundStick;     /* Rick pokes with his stick */
+extern sound_t *soundTune0;     /* tunes: the map intros play the one */
+extern sound_t *soundTune1;     /* given by map_maps[].tune, the main */
+extern sound_t *soundTune2;     /* intro plays tune 5 */
 extern sound_t *soundTune3;
 extern sound_t *soundTune4;
 extern sound_t *soundTune5;
-extern sound_t *soundWalk;
+extern sound_t *soundWalk;      /* Rick walking */
 
 #endif /* ENABLE_SOUND */
 

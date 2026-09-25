@@ -13,6 +13,22 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * NOTES
+ *
+ * Developer tools (ENABLE_DEVTOOLS): a viewer for the graphics of the
+ * data archive, shown before the game starts. It has three pages:
+ *
+ *   tiles    one bank of 0x100 tiles; up/down: next/previous bank,
+ *            right: sprites page
+ *   sprites  32 sprites at a time; up/down: next/previous 32,
+ *            left: tiles page, right: blocks page
+ *   blocks   32 map blocks of 4x4 tiles; up/down: next/previous 32,
+ *            pause: other tiles bank, left: sprites page
+ *
+ * Fire leaves the viewer and starts the game.
+ */
+
 #include "xrick/config.h"
 
 #ifdef ENABLE_DEVTOOLS
@@ -27,15 +43,16 @@
 #include "xrick/system/system.h"
 
 /*
- * DevTools
+ * DevTools, called once per frame
+ *
+ * return: SCREEN_RUNNING, SCREEN_DONE, SCREEN_EXIT
  */
-
 U8
 devtools_run(void)
 {
-  static U8 seq = 0;
-  static U8 pos = 0;
-  static U8 pos2 = 0;
+  static U8 seq = 0;   /* step of the screen, see the switch below */
+  static U8 pos = 0;   /* tiles bank, first sprite, or first block */
+  static U8 pos2 = 0;  /* tiles bank for the blocks */
   U8 i, j, k, l;
   U8 s[128];
 
@@ -56,14 +73,14 @@ devtools_run(void)
     draw_setfb(4, 4);
     draw_tilesListImm(s);
     k = 0;
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 0x10; i++) {  /* hex digits along the edges */
       draw_setfb(80 + i * 0x0a, 14);
       draw_tile((i<10?0x30:'A'-10) + i);
       draw_setfb(64, 30 + i * 0x0a);
       draw_tile((i<10?0x30:'A'-10) + i);
     }
     draw_tilesBank = pos;
-    for (i = 0; i < 0x10; i++)
+    for (i = 0; i < 0x10; i++)  /* the tiles, 16 by 16 */
       for (j = 0; j < 0x10; j++) {
     draw_setfb(80 + j * 0x0a, 30 + i * 0x0a);
     draw_tile(k++);
@@ -104,13 +121,13 @@ devtools_run(void)
     sys_snprintf(s, sizeof(s), "SPRITES\376");
     draw_setfb(4, 4);
     draw_tilesListImm(s);
-    for (i = 0; i < 8; i++) {
+    for (i = 0; i < 8; i++) {  /* column numbers */
       draw_setfb(0x08 + 0x20 + i * 0x20, 0x30 - 26);
       draw_tile((i<10?0x30:'A'-10) + i);
       draw_setfb(0x08 + 0x20 + i * 0x20, 0x30 - 16);
       draw_tile((i+8<10?0x30:'A'-10) + i+8);
     }
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < 4; i++) {  /* number of the first sprite of each row */
       k = pos + i * 8;
       draw_setfb(0x20 - 16, 0x08 + 0x30 + i * 0x20);
       j = k%16;
@@ -121,7 +138,7 @@ devtools_run(void)
       draw_tile((j<10?0x30:'A'-10) + j);
     }
     k = pos;
-    for (i = 0; i < 4; i++)
+    for (i = 0; i < 4; i++)  /* the sprites, 8 by 4 */
       for (j = 0; j < 8; j++) {
       draw_sprite(k++, 0x20 + j * 0x20, 0x30 + i * 0x20);
       }
@@ -157,7 +174,7 @@ devtools_run(void)
       seq = 21;
     }
     break;
-  case 40:
+  case 40:  /* draw blocks */
     sysvid_clear();
 #ifdef GFXPC
     if (pos2 == 0) pos2 = 2;
@@ -171,7 +188,7 @@ devtools_run(void)
     draw_tilesBank = 0;
     draw_tilesListImm(s);
     draw_tilesBank = pos2;
-    for (l = 0; l < 8; l++)
+    for (l = 0; l < 8; l++)  /* the blocks, 8 by 4, of 4 by 4 tiles */
       for (k = 0; k < 4; k++)
     for (i = 0; i < 4; i++)
       for (j = 0; j < 4; j++) {
@@ -180,7 +197,7 @@ devtools_run(void)
       }
     seq = 41;
     break;
-  case 41:
+  case 41:  /* wait for key pressed */
     if (control_test(Control_FIRE))
       seq = 98;
     if (control_test(Control_UP))
@@ -192,26 +209,26 @@ devtools_run(void)
     if (control_test(Control_PAUSE))
       seq = 45;
     break;
-  case 42:
+  case 42:  /* wait for key released */
     if (!(control_test(Control_UP))) {
       if (pos < map_nbr_blocks - 8*4) pos += 8 * 4;
       seq = 40;
     }
     break;
-  case 43:
+  case 43:  /* wait for key released */
     if (!(control_test(Control_DOWN))) {
       if (pos > 0) pos -= 8 * 4;
       seq = 40;
     }
     break;
-  case 44:
+  case 44:  /* wait for key released */
     if (!(control_test(Control_LEFT))) {
       pos = 0;
       pos2 = 0;
       seq = 21;
     }
     break;
-  case 45:
+  case 45:  /* wait for key released */
     if (!(control_test(Control_PAUSE))) {
 #ifdef GFXPC
       if (pos2 == 2) pos2 = 3;

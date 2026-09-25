@@ -18,7 +18,7 @@
 
 #include "xrick/system/basic_types.h"
 
-extern U8 devtools_run(void);
+extern U8 devtools_run(void);  /* graphics viewer, see devtools.c */
 
 #endif /* ndef _DEVTOOLS_H */
 

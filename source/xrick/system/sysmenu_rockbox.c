@@ -22,6 +22,10 @@
  *
  ****************************************************************************/
 
+/*
+ * Plugin menu, Rockbox version: resume, restart, cheats and quit
+ */
+
 #include "xrick/system/sysmenu_rockbox.h"
 
 #include "xrick/config.h"

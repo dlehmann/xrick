@@ -22,6 +22,11 @@
  *
  ****************************************************************************/
 
+/*
+ * Events, Rockbox version: buttons set and clear the bits of
+ * control_status; the menu button opens the plugin menu
+ */
+
 #include "xrick/system/system.h"
 
 #include "xrick/config.h"

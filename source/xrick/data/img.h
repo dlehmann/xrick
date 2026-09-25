@@ -18,18 +18,24 @@
 
 #include "xrick/system/basic_types.h"
 
+/*
+ * One palette entry
+ */
 typedef struct {
-  U8 r, g, b, nothing;
+  U8 r, g, b, nothing;  /* red, green, blue, and padding */
 } img_color_t;
 
+/*
+ * An 8 bit paletted image
+ */
 typedef struct {
-  U16 width;
+  U16 width;             /* size in pixels */
   U16 height;
-  U16 xPos;
+  U16 xPos;              /* position on the screen */
   U16 yPos;
-  U16 ncolors;
-  img_color_t *colors;
-  U8 *pixels;
+  U16 ncolors;           /* number of palette entries */
+  img_color_t *colors;   /* palette */
+  U8 *pixels;            /* width * height palette indexes, row by row */
 } img_t;
 
 extern img_t *img_splash;

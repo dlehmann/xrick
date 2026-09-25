@@ -13,6 +13,10 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Sprites of the Atari ST version
+ */
+
 #include "data_extractor/dat_sprites.h"
 
 #ifdef GFXST

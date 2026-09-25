@@ -18,7 +18,7 @@
 
 #include "xrick/system/basic_types.h"
 
-extern void e_bonus_action(U8);
+extern void e_bonus_action(U8);  /* bonus (treasure) entity action */
 
 #endif /* ndef _E_BONUS_H */
 

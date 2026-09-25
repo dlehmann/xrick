@@ -14,9 +14,13 @@
 #include "xrick/data/tiles.h"
 
 /*
+ * Tiles, loaded from the data archive by resources.c
+ */
+
+/*
  * globals
  */
-size_t tiles_nbr_banks = 0;
-tile_t *tiles_data = NULL;
+size_t tiles_nbr_banks = 0;  /* number of banks in tiles_data */
+tile_t *tiles_data = NULL;   /* all banks, one after the other */
 
 /* eof */

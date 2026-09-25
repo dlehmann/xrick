@@ -11,6 +11,16 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * NOTES
+ *
+ * The data extractor writes the data files that xrick loads (see
+ * xrick/resources.c) from the data compiled into it (the dat_xxx.c
+ * files, taken from the original game). Each resource file is a header,
+ * the data, and a CRC32. The sounds are not written here, they are
+ * plain WAVE files.
+ */
+
 #include "xrick/config.h"
 #include "xrick/resources.h"
 #include "data_extractor/dat_ents.h"
@@ -40,6 +50,7 @@
 
 /*-------------------------------------------------------*/
 
+/* resource file names, indexed by Resource_xxx id; NULL if not written */
 static const char * resourceFiles[Resource_MAX_COUNT] = 
 {
     BOOTSTRAP_RESOURCE_NAME,
@@ -159,6 +170,9 @@ static bool writeString(FILE * fp, const char * name, const char terminator)
 
 /*-------------------------------------------------------*/
 
+/*
+ * write 16b count + array as is
+ */
 static bool writeRawData(FILE * fp, const void * buffer, const size_t size, const size_t count)
 {
     U16 u16Temp = htole16(count);
@@ -179,6 +193,9 @@ static bool writeRawData(FILE * fp, const void * buffer, const size_t size, cons
 /*-------------------------------------------------------*/
 
 #ifdef GFXST
+/*
+ * write an ST picture: header, then pixels
+ */
 static bool writePicture(FILE * fp, const pic_t * picture)
 {
     U16 u16Temp;
@@ -216,6 +233,9 @@ static bool writePicture(FILE * fp, const pic_t * picture)
 
 /*-------------------------------------------------------*/
 
+/*
+ * write a paletted image: header, palette, then pixels
+ */
 static bool writeImage(FILE * fp, const img_t * image)
 {
     U16 u16Temp;
@@ -252,6 +272,10 @@ static bool writeImage(FILE * fp, const img_t * image)
 
 /*-------------------------------------------------------*/
 
+/*
+ * write the file list: the names of all the other resource files, in the
+ * order of the Resource_xxx ids
+ */
 static bool writeResourceFilelist(FILE * fp)
 {
     unsigned id;
@@ -268,6 +292,9 @@ static bool writeResourceFilelist(FILE * fp)
 
 /*-------------------------------------------------------*/
 
+/*
+ * write the entity types data
+ */
 static bool writeResourceEntdata(FILE * fp)
 {
     size_t i;
@@ -303,6 +330,9 @@ static bool writeResourceEntdata(FILE * fp)
 
 /*-------------------------------------------------------*/
 
+/*
+ * write the maps
+ */
 static bool writeResourceMaps(FILE * fp)
 {
     size_t i;
@@ -339,6 +369,9 @@ static bool writeResourceMaps(FILE * fp)
 
 /*-------------------------------------------------------*/
 
+/*
+ * write the submaps
+ */
 static bool writeResourceSubmaps(FILE * fp)
 {
     size_t i;
@@ -373,6 +406,9 @@ static bool writeResourceSubmaps(FILE * fp)
  
 /*-------------------------------------------------------*/
 
+/*
+ * write the steps of the map intro animations
+ */
 static bool writeResourceImapsteps(FILE * fp)
 {
     size_t i;
@@ -407,6 +443,9 @@ static bool writeResourceImapsteps(FILE * fp)
 
 /*-------------------------------------------------------*/
 
+/*
+ * write the map intro texts
+ */
 static bool writeResourceImaptext(FILE * fp)
 {
     size_t i;
@@ -431,6 +470,9 @@ static bool writeResourceImaptext(FILE * fp)
 
 /*-------------------------------------------------------*/
 
+/*
+ * write the sprites
+ */
 static bool writeResourceSpritesData(FILE * fp)
 {
     size_t i, j;
@@ -486,6 +528,9 @@ static bool writeResourceSpritesData(FILE * fp)
 
 /*-------------------------------------------------------*/
 
+/*
+ * write the tiles banks
+ */
 static bool writeResourceTilesData(FILE * fp)
 {
     size_t i, j, k;
@@ -522,6 +567,9 @@ static bool writeResourceTilesData(FILE * fp)
 
 /*-------------------------------------------------------*/
 
+/*
+ * write the default hall of fame
+ */
 static bool writeResourceHighScores(FILE * fp)
 {
     size_t i;
@@ -553,6 +601,9 @@ static bool writeResourceHighScores(FILE * fp)
 
 /*-------------------------------------------------------*/
 
+/*
+ * write the resource header: magic, data version and resource id
+ */
 static bool writeHeader(FILE * fp, const unsigned id)
 {
     resource_header_t header;
@@ -573,6 +624,9 @@ static bool writeHeader(FILE * fp, const unsigned id)
 
 /*-------------------------------------------------------*/
 
+/*
+ * append the CRC32 of everything written so far to the file
+ */
 static bool writeCrc32(FILE * fp)
 {
     U8 tempBuffer[1024];
@@ -614,6 +668,9 @@ static bool writeCrc32(FILE * fp)
 
 /*-------------------------------------------------------*/
 
+/*
+ * write one resource file below rootPath: header, data, CRC32
+ */
 static bool writeFile(const unsigned id, char * rootPath)
 {
     bool success;
@@ -684,6 +741,9 @@ static bool writeFile(const unsigned id, char * rootPath)
 
 /*-------------------------------------------------------*/
 
+/*
+ * print the command line options
+ */
 static void printHelp(void)
 {
    printf(
@@ -697,6 +757,9 @@ static void printHelp(void)
 
 /*-------------------------------------------------------*/
 
+/*
+ * print a command line error
+ */
 static void printFailure(char *msg)
 {
     printf(
@@ -706,6 +769,9 @@ static void printFailure(char *msg)
 
 /*-------------------------------------------------------*/
 
+/*
+ * main: write all resource files, in the output directory
+ */
 int main(int argc, char *argv[])
 {
     bool success = true;

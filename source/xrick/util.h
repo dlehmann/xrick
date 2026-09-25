@@ -18,10 +18,13 @@
 
 #include "xrick/system/basic_types.h"
 
+/* map flags (MAP_EFLG_xxx) of the tiles an entity at x, y covers */
 extern void u_envtest(S16, S16, bool, U8 *, U8 *);
+/* collision tests between entities, points and trigger boxes */
 extern bool u_boxtest(U8, U8);
 extern bool u_fboxtest(U8, S16, S16);
 extern bool u_trigbox(U8, S16, S16);
+/* strdup, allocating with sysmem_push */
 extern char * u_strdup(const char *);
 
 #endif /* ndef _UTIL_H */

@@ -11,6 +11,10 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Sprites of the original game
+ */
+
 #ifndef _DAT_SPRITES_H_
 #define _DAT_SPRITES_H_
 

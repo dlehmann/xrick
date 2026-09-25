@@ -30,27 +30,32 @@
 /* map coordinates of the top of the hidden bottom of the map */
 #define DRAW_XYMAP_HBTOP (0x0100)
 
-extern U8 *draw_tllst;
+extern U8 *draw_tllst;  /* tiles list to draw, see draw_tilesList */
 #ifdef GFXPC
-extern U16 draw_filter;
+extern U16 draw_filter;  /* CGA colors filter, ANDed with tile pixels */
 #endif
-extern U8 draw_tilesBank;
+extern U8 draw_tilesBank;  /* bank of the tiles to draw, see tiles.h */
 
-extern rect_t draw_STATUSRECT;
+extern rect_t draw_STATUSRECT;  /* status bar */
 extern const rect_t draw_SCREENRECT; /* whole fb */
 
-extern size_t game_color_count;
-extern img_color_t *game_colors;
+extern size_t game_color_count;   /* number of colors in game_colors */
+extern img_color_t *game_colors;  /* game palette */
 
+/* frame buffer position where the next tile is drawn (pixels, screen) */
 extern void draw_setfb(U16, U16);
+/* clip a rectangle to the map screen */
 extern bool draw_clipms(S16 *, S16 *, U16 *, U16 *);
+/* tiles lists: tile numbers, 0xff ends a line, 0xfe ends the list */
 extern void draw_tilesList(void);
 extern void draw_tilesListImm(U8 *);
 extern U8 draw_tilesSubList(void);
 extern void draw_tile(register U8);
+/* sprites: at a screen position, or at a map position behind foreground */
 extern void draw_sprite(U8, U16, U16);
 extern void draw_sprite2(U8, U16, U16, bool);
 extern void draw_spriteBackground(U16, U16);
+/* game screen */
 extern void draw_map(void);
 extern void draw_drawStatus(void);
 extern void draw_clearStatus(void);

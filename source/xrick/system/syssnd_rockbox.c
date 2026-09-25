@@ -22,6 +22,11 @@
  *
  ****************************************************************************/
 
+/*
+ * Sound, Rockbox version: channels of 8 bit mono samples, mixed every
+ * syssnd_period into 16 bit stereo buffers played by the PCM driver
+ */
+
 #include "xrick/config.h"
 
 #ifdef ENABLE_SOUND

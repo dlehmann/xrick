@@ -13,6 +13,13 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * The system layer: everything the game needs from the platform (main
+ * loop services, memory, video, files, events, keyboard, sound, command
+ * line and joystick). Each section is implemented in a sysxxx_sdl.c
+ * file for SDL, and in a sysxxx_rockbox.c file for Rockbox.
+ */
+
 #ifndef _SYSTEM_H
 #define _SYSTEM_H
 
@@ -59,19 +66,20 @@
 /*
  * main section
  */
-extern bool sys_init(int, char **);
+extern bool sys_init(int, char **);  /* initialize all sections */
 extern void sys_shutdown(void);
-extern void sys_error(const char *, ...);
-extern void sys_printf(const char *, ...);
+extern void sys_error(const char *, ...);   /* report an error */
+extern void sys_printf(const char *, ...);  /* print to the console */
 extern void sys_snprintf(char *, size_t, const char *, ...);
 extern size_t sys_strlen(const char *);
-extern U32 sys_gettime(void);
-extern void sys_yield(void);
-extern bool sys_cacheData(void);
+extern U32 sys_gettime(void);  /* milliseconds since some fixed time */
+extern void sys_yield(void);   /* let other tasks run a little */
+extern bool sys_cacheData(void);  /* preload sounds before the game */
 extern void sys_uncacheData(void);
 
 /*
- * memory section
+ * memory section: a stack allocator, blocks must be freed in the reverse
+ * order of allocation
  */
 extern bool sysmem_init(void);
 extern void sysmem_shutdown(void);
@@ -81,31 +89,31 @@ extern void sysmem_pop(void *);
 /*
  * video section
  */
-#define SYSVID_ZOOM 2
+#define SYSVID_ZOOM 2      /* default window zoom */
 #define SYSVID_MAXZOOM 4
-#define SYSVID_WIDTH 320
+#define SYSVID_WIDTH 320   /* frame buffer size, pixels */
 #define SYSVID_HEIGHT 200
 
-extern U8 *sysvid_fb;  /* frame buffer */
+extern U8 *sysvid_fb;  /* frame buffer, one byte (palette index) per pixel */
 
 extern bool sysvid_init(void);
 extern void sysvid_shutdown(void);
-extern void sysvid_update(const rect_t *);
+extern void sysvid_update(const rect_t *);  /* show these frame buffer parts */
 extern void sysvid_clear(void);
-extern void sysvid_zoom(S8);
+extern void sysvid_zoom(S8);  /* zoom in (1) or out (-1) */
 extern void sysvid_toggleFullscreen(void);
 extern void sysvid_setGamePalette(void);
 extern void sysvid_setPalette(img_color_t *, U16);
 
 /*
- * file management section
+ * file management section: data files, from a zip archive or a directory
  */
 typedef void *file_t;
 
-extern const char *sysfile_defaultPath;
+extern const char *sysfile_defaultPath;  /* data used without --data */
 
-extern bool sysfile_setRootPath(const char *);
-extern void sysfile_dataPath(char *, size_t, const char *);
+extern bool sysfile_setRootPath(const char *);  /* archive or directory */
+extern void sysfile_dataPath(char *, size_t, const char *);  /* next to it */
 extern void sysfile_clearRootPath(void);
 
 extern file_t sysfile_open(const char *);
@@ -116,13 +124,14 @@ extern int sysfile_read(file_t, void *, size_t, size_t);
 extern void sysfile_close(file_t);
 
 /*
- * events section
+ * events section: turn keyboard, joystick and window events into
+ * control_status
  */
-extern void sysevt_poll(void);
-extern void sysevt_wait(void);
+extern void sysevt_poll(void);  /* process pending events */
+extern void sysevt_wait(void);  /* wait for an event, then process events */
 
 /*
- * keyboard section
+ * keyboard section: key codes of the controls
  */
 extern U8 syskbd_up;
 extern U8 syskbd_down;
@@ -130,10 +139,10 @@ extern U8 syskbd_left;
 extern U8 syskbd_right;
 extern U8 syskbd_pause;
 extern U8 syskbd_end;
-extern U8 syskbd_xtra;
+extern U8 syskbd_xtra;  /* exit */
 extern U8 syskbd_fire;
-extern U8 syskbd_coin;
-extern U8 syskbd_b;
+extern U8 syskbd_coin;  /* insert a coin (--coins) */
+extern U8 syskbd_b;     /* B and A, for the konami code */
 extern U8 syskbd_a;
 
 /*
@@ -145,33 +154,33 @@ extern const U8 syssnd_period; /* time between each sound update, in millisecond
 extern bool syssnd_init(void);
 extern void syssnd_shutdown(void);
 extern void syssnd_update(void);
-extern void syssnd_vol(S8);
+extern void syssnd_vol(S8);  /* volume up (1) or down (-1) */
 extern void syssnd_toggleMute(void);
-extern void syssnd_play(sound_t *, S8);
+extern void syssnd_play(sound_t *, S8);  /* play n times, -1 for ever */
 extern void syssnd_pauseAll(bool);
 extern void syssnd_stop(sound_t *);
 extern void syssnd_stopAll(void);
 #endif /* ENABLE_ SOUND */
 
 /*
- * args section
+ * args section: command line options, see sysarg_help
  */
-extern int sysarg_args_period;
-extern int sysarg_args_map;
-extern int sysarg_args_submap;
-extern int sysarg_args_fullscreen;
-extern int sysarg_args_zoom;
+extern int sysarg_args_period;      /* ms per frame (--speed), 0: default */
+extern int sysarg_args_map;         /* --map, 0 based */
+extern int sysarg_args_submap;      /* --submap, 0 based, 0 for none */
+extern int sysarg_args_fullscreen;  /* --fullscreen */
+extern int sysarg_args_zoom;        /* --zoom, 0 for the default */
 #ifdef ENABLE_SOUND
-extern bool sysarg_args_nosound;
-extern int sysarg_args_vol;
+extern bool sysarg_args_nosound;    /* --nosound */
+extern int sysarg_args_vol;         /* --vol, 0 based */
 #endif /* ENABLE_ SOUND */
-extern const char *sysarg_args_data;
-extern bool sysarg_args_coins;
+extern const char *sysarg_args_data;  /* --data, NULL for the default */
+extern bool sysarg_args_coins;      /* --coins */
 #ifdef ENABLE_LANG_FILE
-extern const char *sysarg_args_lang;
+extern const char *sysarg_args_lang;  /* --lang, NULL for the default */
 #endif /* ENABLE_LANG_FILE */
 
-extern bool sysarg_init(int, char **);
+extern bool sysarg_init(int, char **);  /* false: exit xrick */
 
 /*
  * joystick section

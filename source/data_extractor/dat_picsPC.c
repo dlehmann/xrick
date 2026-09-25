@@ -13,6 +13,10 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Pictures of the PC version: none, the PC screens are made of tiles
+ */
+
 #include "data_extractor/dat_pics.h"
 
 #ifdef GFXPC

@@ -13,6 +13,13 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Special bonus: an invisible start trigger and an invisible stop
+ * trigger. Passing the start trigger starts counting the bonus down from
+ * 2000, by one every 0x1e frames; passing the stop trigger then adds
+ * what is left to the score.
+ */
+
 #include "xrick/e_sbonus.h"
 
 #include "xrick/game.h"
@@ -25,9 +32,9 @@
 /*
  * public vars
  */
-bool e_sbonus_counting = false;
-U8 e_sbonus_counter = 0;
-U16 e_sbonus_bonus = 0;
+bool e_sbonus_counting = false;  /* true between start and stop */
+U8 e_sbonus_counter = 0;         /* frames until the bonus decreases */
+U16 e_sbonus_bonus = 0;          /* bonus earned when reaching the stop */
 
 
 /*

@@ -14,10 +14,14 @@
 #include "xrick/data/sprites.h"
 
 /*
+ * Sprites, loaded from the data archive by resources.c
+ */
+
+/*
  * globals
  */
-size_t sprites_nbr_sprites = 0;
-sprite_t *sprites_data = NULL;
+size_t sprites_nbr_sprites = 0;  /* number of sprites in sprites_data */
+sprite_t *sprites_data = NULL;   /* all sprites */
 
 /* eof */
 

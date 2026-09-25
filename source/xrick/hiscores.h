@@ -20,13 +20,17 @@
 
 #ifdef ENABLE_HISCORE_FILE
 
+/*
+ * High scores kept in a text file next to the game data, see hiscores.c
+ */
 #define HISCORES_FILE "highscores.txt"
 
-extern void hiscores_load(void);
-extern void hiscores_save(void);
+extern void hiscores_load(void);  /* at startup, replaces the archive's */
+extern void hiscores_save(void);  /* after a new entry */
 
 #else
 
+/* without ENABLE_HISCORE_FILE the high scores only live in memory */
 #define hiscores_load()
 #define hiscores_save()
 

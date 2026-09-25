@@ -16,15 +16,20 @@
 #ifndef _SCROLLER_H
 #define _SCROLLER_H
 
-#define SCROLL_RUNNING 1
-#define SCROLL_DONE 0
+/*
+ * Scrolling the map one screen part (8 tile rows) up or down, one tile
+ * row per frame. scroll_up and scroll_down are called once per frame and
+ * return one of these codes.
+ */
+#define SCROLL_RUNNING 1  /* call again next frame */
+#define SCROLL_DONE 0     /* scrolling is over */
 
-#define SCROLL_PERIOD 24
+#define SCROLL_PERIOD 24  /* time between frames while scrolling, in ms */
 
 #include "xrick/system/basic_types.h"
 
-extern U8 scroll_up(void);
-extern U8 scroll_down(void);
+extern U8 scroll_up(void);    /* the map moves up: rick goes down */
+extern U8 scroll_down(void);  /* the map moves down: rick goes up */
 
 #endif /* ndef _SCROLLER_H */
 

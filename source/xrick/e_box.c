@@ -13,6 +13,12 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Boxes: a box of dynamite (entity type 0x10) or of bullets (0x11). Rick
+ * refills his supply by touching one; his stick, a bullet or dynamite
+ * blows it up.
+ */
+
 #include "xrick/e_box.h"
 
 #include "xrick/game.h"
@@ -28,12 +34,12 @@
  * for all entities. Need to replace this w/ an inheritance
  * solution.
  */
-#define cnt c1
+#define cnt c1  /* explosion frames left */
 
 /*
  * Constants
  */
-#define SEQ_INIT 0x0A
+#define SEQ_INIT 0x0A  /* explosion length, in frames */
 
 /*
  * Prototypes
@@ -44,6 +50,7 @@ static void explode(U8);
  * Entity action
  *
  * ASM 245A
+ * e: entity number
  */
 void
 e_box_action(U8 e)
@@ -95,7 +102,8 @@ e_box_action(U8 e)
 
 
 /*
- * Explode when
+ * Start exploding: the box becomes lethal and plays the explosion
+ * sprites (see e_box_action)
  */
 static void explode(U8 e)
 {

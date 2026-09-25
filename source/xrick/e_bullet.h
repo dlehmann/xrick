@@ -18,13 +18,16 @@
 
 #include "xrick/system/basic_types.h"
 
+/*
+ * The bullet fired by Rick: it always uses entity slot 2
+ */
 #define E_BULLET_NO 2
 #define E_BULLET_ENT ent_ents[E_BULLET_NO]
 
-extern S8 e_bullet_offsx;
-extern S16 e_bullet_xc, e_bullet_yc;
+extern S8 e_bullet_offsx;             /* horizontal speed, pixels per frame */
+extern S16 e_bullet_xc, e_bullet_yc;  /* center of the bullet (pixels, map) */
 
-extern void e_bullet_init(U16, U16);
+extern void e_bullet_init(U16, U16);  /* fire from x, y in game_dir */
 extern void e_bullet_action(U8);
 
 #endif /* ndef _E_BULLET_H */

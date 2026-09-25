@@ -13,6 +13,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Entity data of the original game: entity types, sprite sequences and
+ * move steps
+ */
+
 #include "data_extractor/dat_ents.h"
 
 entdata_t ENT_ENTDATA[ENT_NBR_ENTDATA] = {

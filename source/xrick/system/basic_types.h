@@ -13,6 +13,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Basic types: fixed size integers (U8 ... S32) and bool, also for
+ * compilers without stdint.h and stdbool.h
+ */
+
 #ifndef _BASIC_TYPES_H
 #define _BASIC_TYPES_H
 

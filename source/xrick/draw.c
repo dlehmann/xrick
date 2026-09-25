@@ -16,13 +16,14 @@
 /*
  * NOTES
  *
- * This is the only file which accesses the video. Anything calling d_*
- * function should be video-independant.
+ * This is the only file which accesses the video. Anything calling draw_*
+ * functions should be video-independant.
  *
  * draw.c draws into a 320x200 or 0x0140x0xc8 8-bits depth frame buffer,
- * using the CGA 2 bits color codes. It is up to the video to figure out
- * how to display the frame buffer. Whatever draw.c does, does not show
- * until the screen is explicitely refreshed.
+ * using the CGA 2 bits color codes (PC) or the 4 bits indexes of the game
+ * palette (ST). It is up to the video to figure out how to display the
+ * frame buffer. Whatever draw.c does, does not show until the screen is
+ * explicitely refreshed.
  *
  * The "screen" is the whole 0x0140 by 0x00c8 screen, coordinates go from
  * 0x0000,0x0000 to 0x013f,0x00c7.
@@ -91,8 +92,8 @@ rect_t draw_STATUSRECT = {
 };
 const rect_t draw_SCREENRECT = { 0, 0, SYSVID_WIDTH, SYSVID_HEIGHT, NULL };
 
-size_t game_color_count = 0;
-img_color_t *game_colors = NULL;
+size_t game_color_count = 0;   /* number of colors in game_colors */
+img_color_t *game_colors = NULL;  /* game palette, from the data archive */
 
 /*
  * private vars
@@ -307,9 +308,11 @@ draw_sprite(U8 nbr, U16 x, U16 y)
 
 
 /*
- * Draw a sprite
+ * Draw a sprite, ST version: color 0 is transparent
  *
- * foobar
+ * number: sprite number
+ * x, y: sprite position (pixels, screen)
+ * fb: CHANGED
  */
 #ifdef GFXST
 void
@@ -336,9 +339,14 @@ draw_sprite(U8 number, U16 x, U16 y)
 
 
 /*
- * Draw a sprite
+ * Draw a sprite, ST version, clipped to the map screen and hidden behind
+ * foreground tiles unless front is set
  *
  * NOTE re-using original ST graphics format
+ *
+ * number: sprite number
+ * x, y: sprite position (pixels, map)
+ * front: true to draw in front of the foreground tiles
  */
 #ifdef GFXST
 void
@@ -365,8 +373,13 @@ draw_sprite2(U8 number, U16 x, U16 y, bool front)
   draw_setfb(x0 - DRAW_XYMAP_SCRLEFT, y0 - DRAW_XYMAP_SCRTOP + 8);
 
   for (r = 0; r < SPRITES_NBR_ROWS; r++) {
-    if (r >= h || y + r < y0) continue;
+    if (r >= h || y + r < y0) continue;  /* row clipped */
 
+    /*
+     * draw the row from right to left, 8 pixels per U32; fetch the
+     * flags of the map tile below the pixels each time a tile boundary
+     * is crossed, to skip the pixels hidden by the foreground
+     */
     i = 0x1f;
     im = x - (x & 0xfff8);
     flg = map_eflg[map_map[(y + r) >> 3][(x + 0x1f)>> 3]];
@@ -413,11 +426,13 @@ draw_sprite2(U8 number, U16 x, U16 y, bool front)
 
 
 /*
- * Draw a sprite
- * align to tile column, determine plane automatically, and clip
+ * Draw a sprite, PC version
+ * align to tile column, shift the sprite to the pixel position, and clip;
+ * pixels over foreground tiles are hidden unless front is set
  *
  * nbr: sprite number
  * x, y: sprite position (pixels, map).
+ * front: true to draw in front of the foreground tiles
  * fb: CHANGED
  */
 #ifdef GFXPC
@@ -574,6 +589,7 @@ draw_drawStatus(void)
 
   draw_tilesBank = 0;
 
+  /* score, six digits, then one icon per bullet, bomb and life left */
   for (i = 5, sv = game_score; i >= 0; i--) {
     s[i] = 0x30 + (U8)(sv % 10);
     sv /= 10;
@@ -598,7 +614,8 @@ draw_drawStatus(void)
 
 
 /*
- * Draw info indicators
+ * Draw info indicators: the cheat modes that are on, T for trainer, N for
+ * never die and V for expose (see game_toggleCheat)
  */
 #ifdef ENABLE_CHEATS
 void
@@ -621,7 +638,7 @@ draw_infos(void)
 
 
 /*
- * Clear status indicators
+ * Clear status indicators: redraw the map behind them (PC), or blanks (ST)
  */
 void
 draw_clearStatus(void)
@@ -646,7 +663,7 @@ draw_clearStatus(void)
 }
 
 /*
- * Draw a picture
+ * Draw a picture, at its own position
  */
 #ifdef GFXST
 void
@@ -674,7 +691,7 @@ draw_pic(const pic_t * picture)
 
 
 /*
- * Draw a bitmap
+ * Draw a bitmap, at its own position, and switch to its palette
  */
 void
 draw_img(img_t *image)

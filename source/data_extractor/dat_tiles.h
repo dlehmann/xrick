@@ -11,6 +11,10 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Tiles of the original game
+ */
+
 #ifndef _DAT_TILES_H_
 #define _DAT_TILES_H_
 

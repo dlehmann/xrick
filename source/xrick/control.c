@@ -13,13 +13,21 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Control status shared by the system layer, which sets it from keyboard
+ * and joystick events, and the game, which reads it.
+ */
+
 #include "xrick/control.h"
 
-unsigned control_status = 0;
+unsigned control_status = 0;  /* control_t bits of the controls held down */
+
+/* external definitions of the inline functions, for C99 compilers */
 extern inline bool control_test(control_t c);
 extern inline void control_set(control_t c);
 extern inline void control_clear(control_t c);
-bool control_active = true;
+
+bool control_active = true;  /* false without window focus: pauses */
 unsigned control_coins = 0;
 
 /* eof */

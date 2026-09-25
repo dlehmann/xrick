@@ -22,6 +22,11 @@
  *
  ****************************************************************************/
 
+/*
+ * Memory, Rockbox version: a stack allocator in the plugin buffer, blocks
+ * must be released in the reverse order of allocation
+ */
+
 #include "xrick/system/system.h"
 
 #include "xrick/debug.h"

@@ -18,12 +18,17 @@
 
 #include "xrick/system/basic_types.h"
 
-extern bool e_sbonus_counting;
-extern U8 e_sbonus_counter;
-extern U16 e_sbonus_bonus;
+/*
+ * Special bonus: invisible start and stop triggers. Reaching the stop
+ * trigger soon after the start trigger earns a bonus that decreases
+ * with the time taken.
+ */
+extern bool e_sbonus_counting;  /* true between start and stop */
+extern U8 e_sbonus_counter;     /* frames until the bonus decreases */
+extern U16 e_sbonus_bonus;      /* bonus earned when reaching the stop */
 
-extern void e_sbonus_start(U8);
-extern void e_sbonus_stop(U8);
+extern void e_sbonus_start(U8);  /* start trigger entity action */
+extern void e_sbonus_stop(U8);   /* stop trigger entity action */
 
 #endif /* ndef _E_SBONUS_H */
 

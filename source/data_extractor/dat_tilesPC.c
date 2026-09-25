@@ -13,6 +13,10 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Tiles of the PC version (CGA)
+ */
+
 #include "data_extractor/dat_tiles.h"
 
 #ifdef GFXPC

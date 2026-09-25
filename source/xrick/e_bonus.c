@@ -13,6 +13,10 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Bonus: a treasure worth 500 points, picked up when Rick touches it
+ */
+
 #include "xrick/e_bonus.h"
 
 #include "xrick/game.h"
@@ -26,14 +30,15 @@
  * Entity action
  *
  * ASM 242C
+ * e: entity number
  */
 void
 e_bonus_action(U8 e)
 {
-#define seq c1
+#define seq c1  /* 0: waiting, 1 to 9: flying up, 10: done */
 
   if (ent_ents[e].seq == 0) {
-    if (e_rick_boxtest(e)) {
+    if (e_rick_boxtest(e)) {  /* picked up: score, and never again */
       game_score += 500;
 #ifdef ENABLE_SOUND
       syssnd_play(soundBonus, 1);
@@ -47,12 +52,13 @@ e_bonus_action(U8 e)
   }
 
   else if (ent_ents[e].seq > 0 && ent_ents[e].seq < 10) {
+    /* the points sprite flies up */
     ent_ents[e].seq++;
     ent_ents[e].y -= 2;
   }
 
   else {
-    ent_ents[e].n = 0;
+    ent_ents[e].n = 0;  /* deactivate */
   }
 }
 

@@ -22,6 +22,11 @@
  *
  ****************************************************************************/
 
+/*
+ * System, Rockbox version: initialization and shutdown of all sections,
+ * console output, time, and preloading of the sounds
+ */
+
 #include "xrick/system/system.h"
 
 #include "xrick/config.h"

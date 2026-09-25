@@ -13,6 +13,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Joystick, SDL version (ENABLE_JOYSTICK): opens the first joystick
+ * found. Its events are processed in sysevt_sdl.c.
+ */
+
 #include "xrick/config.h"
 
 #ifdef ENABLE_JOYSTICK
@@ -22,9 +27,14 @@
 
 #include <SDL.h>
 
-static SDL_Joystick *joystick = NULL;
+static SDL_Joystick *joystick = NULL;  /* NULL when none was found */
 static bool isJoystickInitialised = false;
 
+/*
+ * Initialize the joystick subsystem and open a joystick, if any
+ *
+ * return: always true, xrick runs without a joystick
+ */
 bool
 sysjoy_init(void)
 {
@@ -70,6 +80,9 @@ sysjoy_init(void)
     return true;
 }
 
+/*
+ * Close the joystick
+ */
 void
 sysjoy_shutdown(void)
 {

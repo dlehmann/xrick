@@ -13,13 +13,17 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Entry point of the SDL version
+ */
+
 #include "xrick/system/system.h"
 #include "xrick/game.h"
 
 #include <SDL.h>
 
 /*
- * main
+ * main: initialize the system, run the game, shut down
  */
 int
 main(int argc, char *argv[])

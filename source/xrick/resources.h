@@ -19,13 +19,18 @@
 #include "xrick/system/basic_types.h"
 
 /*
+ * Layout of the resource files in the data archive, written by the data
+ * extractor. Each file starts with a resource_header_t, followed by its
+ * data, and ends with the CRC32 of everything before it. Structures only
+ * use arrays of bytes, so that they have no padding.
+ *
  * All data is assumed to be Little Endian
  */
 typedef struct
 {
-    U8 magic[4];
-    U8 version[2];
-    U8 resourceId[2];
+    U8 magic[4];  /* resource_magic */
+    U8 version[2];     /* DATA_VERSION */
+    U8 resourceId[2];  /* Resource_xxx */
 } resource_header_t;
 
 typedef struct 
@@ -37,7 +42,7 @@ typedef struct
     U8 trig_w;
     U8 trig_h;
     U8 snd;
-} resource_entdata_t;
+} resource_entdata_t;  /* see entdata_t */
 
 typedef struct 
 {
@@ -46,7 +51,7 @@ typedef struct
     U8 row[2];
     U8 submap[2];
     U8 tuneId[2];
-} resource_map_t;
+} resource_map_t;  /* see map_t, tuneId is a Resource_SOUNDTUNEx */
 
 typedef struct 
 {
@@ -54,36 +59,39 @@ typedef struct
     U8 bnum[2];
     U8 connect[2];
     U8 mark[2];
-} resource_submap_t;
+} resource_submap_t;  /* see submap_t */
 
 typedef struct {
     U8 count[2];
     U8 dx[2];
     U8 dy[2];
     U8 base[2];
-} resource_imapsteps_t;
+} resource_imapsteps_t;  /* see screen_imapsteps_t */
 
 typedef struct {
     U8 width[2];
     U8 height[2];
     U8 xPos[2];
     U8 yPos[2];
-} resource_pic_t;
+} resource_pic_t;  /* header of pictures and images, see pic_t, img_t */
 
 typedef struct {
   U8 score[4];
   U8 name[HISCORE_NAME_SIZE];
-} resource_hiscore_t;
+} resource_hiscore_t;  /* see hiscore_t */
 
 #ifdef GFXPC
 typedef struct {
     U8 mask[2];
     U8 pict[2];
-} resource_spriteX_t;
+} resource_spriteX_t;  /* see spriteX_t */
 #endif /* GFXPC */
 
-extern const U8 resource_magic[4];
+extern const U8 resource_magic[4];  /* "RICK" */
 
+/*
+ * Resource ids: the file list gives the file name of each of them
+ */
 enum
 {
     DATA_VERSION = 3,
@@ -155,10 +163,10 @@ enum
     Resource_MAX_COUNT,
 };
 
-#define BOOTSTRAP_RESOURCE_NAME "filelist.dat"
+#define BOOTSTRAP_RESOURCE_NAME "filelist.dat"  /* the file list */
 
-bool resources_load(void);
-void resources_unload(void);
+bool resources_load(void);    /* load all the data from the archive */
+void resources_unload(void);  /* free it */
 
 #endif /* ndef _RESOURCES_H */
 

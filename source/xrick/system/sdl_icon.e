@@ -1,3 +1,5 @@
+/* window icon, 32x32 pixels (included by sysvid_sdl.c) */
+
 static U8 IMG_ICON_PIXELS[] = {
 0,0,0,0,0,0,0,0,0,
 211,108,211,108,52,52,52,52,52,52,52,52,52,0,0,0,

@@ -13,6 +13,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Screen data of the original game: map intro animations and texts,
+ * default hall of fame, and other texts (tiles lists)
+ */
+
 #include "data_extractor/dat_screens.h"
 
 /*

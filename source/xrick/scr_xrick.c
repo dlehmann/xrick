@@ -13,6 +13,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * The xrick splash screen, shown when xrick starts; also holds the
+ * screen data shared by all screens.
+ */
+
 #include "xrick/screens.h"
 
 #include "xrick/game.h"
@@ -22,7 +27,7 @@
 #include "xrick/system/system.h"
 
 /*
- * global vars
+ * global vars, see screens.h
  */
 size_t screen_nbr_imapsl = 0;
 U8 *screen_imapsl = NULL;
@@ -57,10 +62,10 @@ U8 *screen_pausedtxt = NULL;
 U8
 screen_xrick(void)
 {
-    static U8 seq = 0;
-    static U8 wait = 0;
+    static U8 seq = 0;   /* step of the screen */
+    static U8 wait = 0;  /* frames waited */
 
-    if (seq == 0) {
+    if (seq == 0) {  /* show the splash image, with its own palette */
         sysvid_clear();
         draw_img(img_splash);
         game_rects = &draw_SCREENRECT;

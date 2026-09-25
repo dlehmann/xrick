@@ -13,6 +13,10 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Pause indicator, drawn over the game
+ */
+
 #include "xrick/screens.h"
 #include "xrick/lang.h"
 
@@ -22,7 +26,9 @@
 #include "xrick/ents.h"
 
 /*
- * Display the pause indicator
+ * Display the pause indicator, or remove it by redrawing the game
+ *
+ * pause: true to show the indicator, false to remove it
  */
 void
 screen_pause(bool pause)

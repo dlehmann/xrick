@@ -14,6 +14,10 @@
  */
 
 /*
+ * Events, SDL version: keys and joystick set and clear the bits of
+ * control_status; function keys act at once (fullscreen, zoom, sound,
+ * cheats).
+ *
  * 20021010 SDLK_n replaced by SDLK_Fn because some non-US keyboards
  *          requires that SHIFT be pressed to input numbers.
  */
@@ -28,9 +32,9 @@
 #include "xrick/control.h"
 #include "xrick/draw.h"
 
-#define SYSJOY_RANGE 3280
+#define SYSJOY_RANGE 3280  /* joystick dead zone, on each side of the center */
 
-static SDL_Event event;
+static SDL_Event event;  /* event being processed */
 
 /*
  * Process an event

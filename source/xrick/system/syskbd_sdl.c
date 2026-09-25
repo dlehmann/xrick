@@ -18,7 +18,8 @@
 #include "xrick/system/system.h"
 
 /*
- * Global variables
+ * Global variables: key codes of the controls, SDL version. The arrow
+ * keys work too, see sysevt_sdl.c; --keys changes the first five.
  */
 U8 syskbd_up = SDLK_o;
 U8 syskbd_down = SDLK_k;

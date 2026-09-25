@@ -18,6 +18,9 @@
 
 #include "xrick/system/basic_types.h"
 
+/*
+ * Controls, one bit each in control_status
+ */
 typedef enum
 {
     Control_UP = (1 << 0),
@@ -32,11 +35,16 @@ typedef enum
     Control_A = (1 << 9)
 } control_t;
 
-extern unsigned control_status;
+extern unsigned control_status;  /* controls held down, control_t bits */
+
+/* test if a control is held down */
 inline bool control_test(control_t c) { return control_status & c; }
+/* mark a control as held down */
 inline void control_set(control_t c) { control_status |= c; }
+/* mark a control as released */
 inline void control_clear(control_t c) { control_status &= ~c; }
-extern bool control_active;
+
+extern bool control_active;  /* false without window focus (ENABLE_FOCUS) */
 extern unsigned control_coins;  /* coins inserted and not used yet */
 
 #endif /* ndef _CONTROL_H */

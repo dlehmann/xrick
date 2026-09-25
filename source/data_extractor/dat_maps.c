@@ -13,6 +13,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Map data of the original game: maps, submaps, connections, blocks,
+ * marks, block numbers and tile flags
+ */
+
 #include "data_extractor/dat_maps.h"
 
 map_t MAP_MAPS[MAP_NBR_MAPS] = {

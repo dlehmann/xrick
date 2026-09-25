@@ -13,12 +13,17 @@
 
 #include "xrick/data/img.h"
 
+/*
+ * Images: the xrick splash screen, loaded from the data archive by
+ * resources.c
+ */
+
 #include <stddef.h> /* NULL */
 
 /*
  * globals
  */
-img_t *img_splash = NULL;
+img_t *img_splash = NULL;  /* xrick splash screen (screen_xrick) */
 
 /* eof */
 

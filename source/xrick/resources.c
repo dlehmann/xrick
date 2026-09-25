@@ -11,6 +11,15 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * NOTES
+ *
+ * Loads the game data from the data archive (see sysfile_xxx): a file
+ * list, then one file per resource, each checked with its header and
+ * CRC32 (see resources.h). Sounds are plain WAVE files. All memory comes
+ * from sysmem_push, so resources are unloaded in the reverse order.
+ */
+
 #include "xrick/resources.h"
 
 #include "xrick/draw.h"
@@ -68,6 +77,7 @@ static void unloadSound(const unsigned id);
 /*
  * local vars
  */
+/* resource file names, from the file list, indexed by Resource_xxx id */
 static char * resourceFiles[Resource_MAX_COUNT] =
 {
     BOOTSTRAP_RESOURCE_NAME,
@@ -75,7 +85,9 @@ static char * resourceFiles[Resource_MAX_COUNT] =
 };
 
 /*
- * load 16b length + not-terminated string
+ * load 16b length + not-terminated string, and add terminator at its end
+ *
+ * buffer: CHANGED to the allocated string
  */
 static bool loadString(file_t fp, char ** buffer, const char terminator)
 {
@@ -110,7 +122,7 @@ static bool loadString(file_t fp, char ** buffer, const char terminator)
 }
 
 /*
- *
+ * Free a string loaded by loadString
  */
 static void unloadString(char ** buffer)
 {
@@ -119,7 +131,8 @@ static void unloadString(char ** buffer)
 }
 
 /*
- *
+ * Load the file list: the names of all the other resource files, in
+ * the order of the Resource_xxx ids
  */
 static bool loadResourceFilelist(file_t fp)
 {
@@ -136,7 +149,7 @@ static bool loadResourceFilelist(file_t fp)
 }
 
 /*
- *
+ * Free the file list
  */
 static void unloadResourceFilelist()
 {
@@ -149,7 +162,7 @@ static void unloadResourceFilelist()
 }
 
 /*
- *
+ * Load the entity types data (ent_entdata)
  */
 static bool loadResourceEntdata(file_t fp)
 {
@@ -189,7 +202,7 @@ static bool loadResourceEntdata(file_t fp)
 }
 
 /*
- *
+ * Free the entity types data
  */
 static void unloadResourceEntdata()
 {
@@ -199,7 +212,11 @@ static void unloadResourceEntdata()
 }
 
 /*
+ * Load an array stored as is: a 16 bit count, then count elements of
+ * size bytes
  *
+ * buffer: CHANGED to the allocated array
+ * count: CHANGED to the number of elements
  */
 static bool loadRawData(file_t fp, void ** buffer, const size_t size, size_t * count)
 {
@@ -224,7 +241,7 @@ static bool loadRawData(file_t fp, void ** buffer, const size_t size, size_t * c
 }
 
 /*
- *
+ * Free an array loaded by loadRawData
  */
 static void unloadRawData(void ** buffer, size_t * count)
 {
@@ -234,7 +251,7 @@ static void unloadRawData(void ** buffer, size_t * count)
 }
 
 /*
- *
+ * Load the maps (map_maps)
  */
 static bool loadResourceMaps(file_t fp)
 {
@@ -284,7 +301,7 @@ static bool loadResourceMaps(file_t fp)
 }
 
 /*
- *
+ * Free the maps
  */
 static void unloadResourceMaps()
 {
@@ -294,7 +311,7 @@ static void unloadResourceMaps()
 }
 
 /*
- *
+ * Load the submaps (map_submaps)
  */
 static bool loadResourceSubmaps(file_t fp)
 {
@@ -333,7 +350,7 @@ static bool loadResourceSubmaps(file_t fp)
 }
 
 /*
- *
+ * Free the submaps
  */
 static void unloadResourceSubmaps()
 {
@@ -343,7 +360,7 @@ static void unloadResourceSubmaps()
 }
 
 /*
- *
+ * Load the steps of the map intro animations (screen_imapsteps)
  */
 static bool loadResourceImapsteps(file_t fp)
 {
@@ -382,7 +399,7 @@ static bool loadResourceImapsteps(file_t fp)
 }
 
 /*
- *
+ * Free the map intro steps
  */
 static void unloadResourceImapsteps()
 {
@@ -392,7 +409,7 @@ static void unloadResourceImapsteps()
 }
 
 /*
- *
+ * Load the map intro texts (screen_imaptext)
  */
 static bool loadResourceImaptext(file_t fp)
 {
@@ -422,7 +439,7 @@ static bool loadResourceImaptext(file_t fp)
 }
 
 /*
- *
+ * Free the map intro texts
  */
 static void unloadResourceImaptext()
 {
@@ -439,7 +456,7 @@ static void unloadResourceImaptext()
 }
 
 /*
- *
+ * Load the default hall of fame (screen_highScores)
  */
 static bool loadResourceHighScores(file_t fp)
 {
@@ -474,7 +491,7 @@ static bool loadResourceHighScores(file_t fp)
 }
 
 /*
- *
+ * Free the hall of fame
  */
 static void unloadResourceHighScores()
 {
@@ -484,7 +501,7 @@ static void unloadResourceHighScores()
 }
 
 /*
- *
+ * Load the sprites (sprites_data)
  */
 static bool loadResourceSpritesData(file_t fp)
 {
@@ -544,7 +561,7 @@ static bool loadResourceSpritesData(file_t fp)
 }
 
 /*
- *
+ * Free the sprites
  */
 static void unloadResourceSpritesData()
 {
@@ -554,7 +571,7 @@ static void unloadResourceSpritesData()
 }
 
 /*
- *
+ * Load the tiles banks (tiles_data)
  */
 static bool loadResourceTilesData(file_t fp)
 {
@@ -601,7 +618,7 @@ static bool loadResourceTilesData(file_t fp)
 }
 
 /*
- *
+ * Free the tiles banks
  */
 static void unloadResourceTilesData()
 {
@@ -611,7 +628,9 @@ static void unloadResourceTilesData()
 }
 
 /*
+ * Load a paletted image
  *
+ * image: CHANGED to the allocated image
  */
 static bool loadImage(file_t fp, img_t ** image)
 {
@@ -667,7 +686,7 @@ static bool loadImage(file_t fp, img_t ** image)
 }
 
 /*
- *
+ * Free an image loaded by loadImage
  */
 static void unloadImage(img_t ** image)
 {
@@ -681,7 +700,9 @@ static void unloadImage(img_t ** image)
 }
 
 /*
+ * Load an ST picture
  *
+ * picture: CHANGED to the allocated picture
  */
 #ifdef GFXST
 static bool loadPicture(file_t fp, pic_t ** picture)
@@ -732,7 +753,7 @@ static bool loadPicture(file_t fp, pic_t ** picture)
 }
 
 /*
- *
+ * Free a picture loaded by loadPicture
  */
 static void unloadPicture(pic_t ** picture)
 {
@@ -748,7 +769,10 @@ static void unloadPicture(pic_t ** picture)
 #ifdef ENABLE_SOUND
 
 /*
+ * Find the sound variable of a sound resource
  *
+ * sound: CHANGED to the address of the variable
+ * return: false if id is not a sound
  */
 static bool fromResourceIdToSound(const unsigned id, sound_t *** sound)
 {
@@ -792,7 +816,8 @@ static bool fromResourceIdToSound(const unsigned id, sound_t *** sound)
 }
 
 /*
- *
+ * Prepare a sound: remember its file name and check its WAVE header;
+ * the samples are loaded when the sound is played (see syssnd_load)
  */
 static bool loadSound(const unsigned id)
 {
@@ -887,7 +912,7 @@ static bool loadSound(const unsigned id)
 }
 
 /*
- *
+ * Free a sound prepared by loadSound
  */
 static void unloadSound(const unsigned id)
 {
@@ -911,7 +936,8 @@ static void unloadSound(const unsigned id)
 
 
 /*
- *
+ * Read and check the header of a resource file: magic, data version
+ * and resource id
  */
 static bool readHeader(file_t fp, const unsigned id)
 {
@@ -949,7 +975,8 @@ static bool readHeader(file_t fp, const unsigned id)
 }
 
 /*
- *
+ * Check the CRC32 of a resource file: its last 4 bytes hold the CRC32
+ * of everything before them
  */
 static bool checkCrc32(const unsigned id)
 {
@@ -993,7 +1020,7 @@ static bool checkCrc32(const unsigned id)
 }
 
 /*
- *
+ * Check and load one resource file into its variables
  */
 static bool readFile(const unsigned id)
 {
@@ -1148,7 +1175,9 @@ static bool readFile(const unsigned id)
 }
 
 /*
+ * Load all resources from the data archive
  *
+ * return: false on error, after printing it
  */
 bool resources_load()
 {
@@ -1174,7 +1203,7 @@ bool resources_load()
 }
 
 /*
- *
+ * Free all resources, in the reverse order of loading
  */
 void resources_unload()
 {

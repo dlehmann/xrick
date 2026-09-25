@@ -19,7 +19,7 @@
 /* version */
 #define XRICK_VERSION_STR "${XRICK_VERSION_STR}"
 
-/* graphics (choose one) */
+/* graphics (choose one): Atari ST or PC (CGA) */
 #cmakedefine GFXST
 #cmakedefine GFXPC
 

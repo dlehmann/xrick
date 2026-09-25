@@ -22,6 +22,12 @@
  *
  ****************************************************************************/
 
+/*
+ * Video, Rockbox version: the 320x200 frame buffer is copied to the LCD,
+ * in color or in grey levels, and scaled down by skipping rows and
+ * columns when the LCD is smaller
+ */
+
 #include "xrick/system/system.h"
 
 #include "xrick/config.h"
@@ -61,7 +67,7 @@ enum { ROW_RESIZE_STEP = (LCD_HEIGHT << 16) / SYSVID_HEIGHT };
 static bool rowsToSkip[SYSVID_HEIGHT];
 
 /*
- *
+ * Find the frame buffer rows to skip to fit the LCD height
  */
 static void calculateRowsToSkip(void)
 {
@@ -88,7 +94,8 @@ enum { COLUMN_RESIZE_STEP = (LCD_WIDTH << 16) / (SYSVID_WIDTH + (DRAW_XYMAP_SCRL
 static bool columnsToSkip[SYSVID_WIDTH + (DRAW_XYMAP_SCRLEFT*2)];
 
 /*
- *
+ * Find the frame buffer columns to skip to fit the LCD width (the map
+ * screen only, without its left and right borders)
  */
 static void calculateColumnsToSkip(void)
 {
@@ -110,7 +117,7 @@ static void calculateColumnsToSkip(void)
 #endif /* (LCD_WIDTH < SYSVID_WIDTH) */
 
 /*
- *
+ * Set the first n colors of the palette
  */
 void sysvid_setPalette(img_color_t *pal, U16 n)
 {
@@ -127,7 +134,7 @@ void sysvid_setPalette(img_color_t *pal, U16 n)
 }
 
 /*
- *
+ * Set the game palette, from the data archive
  */
 void sysvid_setGamePalette()
 {

@@ -18,14 +18,18 @@
 
 #include "xrick/system/basic_types.h"
 
+/*
+ * A rectangle of the screen (pixels), in a linked list of rectangles.
+ * Lists tell the video which parts of the screen changed.
+ */
 typedef struct rect_s {
   U16 x, y;
   U16 width, height;
-  struct rect_s *next;
+  struct rect_s *next;  /* next rectangle of the list, or NULL */
 } rect_t;
 
-extern void rects_free(rect_t *);
-extern rect_t *rects_new(U16, U16, U16, U16, rect_t *);
+extern void rects_free(rect_t *);  /* free a list */
+extern rect_t *rects_new(U16, U16, U16, U16, rect_t *);  /* add to a list */
 
 #endif /* ndef _RECTS_H */
 

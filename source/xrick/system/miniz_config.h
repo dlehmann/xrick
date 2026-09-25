@@ -11,6 +11,10 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * miniz configuration: xrick only uses its CRC32 function
+ */
+
 #ifndef _MINIZ_CONFIG_H
 #define _MINIZ_CONFIG_H
 

@@ -13,13 +13,17 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Rectangles lists, telling the video which parts of the screen changed
+ */
+
 #include "xrick/rects.h"
 #include "xrick/system/system.h"
 
 /*
- * Free a list of rectangles and set the pointer to NULL.
+ * Free a list of rectangles.
  *
- * p: rectangle list CHANGED to NULL
+ * r: rectangle list
  */
 void
 rects_free(rect_t *r)
@@ -35,6 +39,11 @@ rects_free(rect_t *r)
 
 /*
  * Add a rectangle to a list of rectangles
+ *
+ * x, y, width, height: the rectangle (pixels, screen)
+ * next: the list to add it to, NULL for a new list
+ * return: the new list, starting with the rectangle; NULL when out of
+ *         memory
  */
 rect_t *
 rects_new(U16 x, U16 y, U16 width, U16 height, rect_t *next)

@@ -1,3 +1,5 @@
+/* game palette of the Atari ST version (included by main.c) */
+
 enum { GAME_COLOR_COUNT = 32 };
 
 static img_color_t GAME_COLORS[GAME_COLOR_COUNT] = {

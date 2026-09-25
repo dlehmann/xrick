@@ -1,3 +1,5 @@
+/* key names for --keys and their SDL key codes (included by sysarg_sdl.c) */
+
 {"BACKSPACE" , SDLK_BACKSPACE},
 {"TAB" , SDLK_TAB},
 {"CLEAR" , SDLK_CLEAR},

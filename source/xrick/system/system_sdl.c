@@ -13,6 +13,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * System, SDL version: initialization and shutdown of all sections,
+ * console output, time, and preloading of the sounds.
+ */
+
 #include "xrick/system/system.h"
 #include "xrick/config.h"
 #ifdef ENABLE_SOUND
@@ -32,10 +37,10 @@
 /*
  * Local variables
  */
-static char stringBuffer[2048];
+static char stringBuffer[2048];  /* message being printed */
 
 /*
- * Error
+ * Error: print a message to standard error
  */
 void
 sys_error(const char *err, ...)
@@ -126,7 +131,10 @@ sys_yield(void)
 }
 
 /*
- * Initialize system
+ * Initialize system: command line, memory, video, joystick, sound and
+ * data archive
+ *
+ * return: false to exit xrick
  */
 bool
 sys_init(int argc, char **argv)
@@ -180,7 +188,9 @@ sys_shutdown(void)
 }
 
 /*
- * Preload data before entering main loop
+ * Preload data before entering main loop: the sounds played during the
+ * game are loaded once and kept, instead of being loaded each time they
+ * play
  */
 bool
 sys_cacheData(void)

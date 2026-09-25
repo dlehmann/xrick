@@ -11,6 +11,10 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Pictures of the Atari ST version
+ */
+
 #ifndef _DAT_PICS_H
 #define _DAT_PICS_H
 

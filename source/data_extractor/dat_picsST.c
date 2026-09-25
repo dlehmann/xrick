@@ -13,6 +13,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Pictures of the Atari ST version: hall of fame title, congratulations
+ * and title screen
+ */
+
 #include "data_extractor/dat_pics.h"
 
 #ifdef GFXST

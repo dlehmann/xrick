@@ -22,6 +22,10 @@
  *
  ****************************************************************************/
 
+/*
+ * Files, Rockbox version: the data files are read from a directory
+ */
+
 #include "xrick/system/system.h"
 
 #include "xrick/config.h"
@@ -42,7 +46,7 @@ const char *sysfile_defaultPath = XRICK_GAME_DIR;
 static char *rootPath = NULL;
 
 /*
- *
+ * Set the data directory to read the data files from
  */
 bool sysfile_setRootPath(const char *name)
 {
@@ -51,7 +55,7 @@ bool sysfile_setRootPath(const char *name)
 }
 
 /*
- *
+ * Forget the data directory
  */
 void sysfile_clearRootPath()
 {

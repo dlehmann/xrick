@@ -22,6 +22,10 @@
  *
  ****************************************************************************/
 
+/*
+ * Plugin menu, Rockbox version, see sysmenu_rockbox.c
+ */
+
 #ifndef _SYSMENU_ROCKBOX_H
 #define _SYSMENU_ROCKBOX_H
 

@@ -13,6 +13,12 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Scrolling: when rick gets near the top or the bottom of the screen,
+ * the map scrolls by 8 tile rows, one row per frame. Entities move with
+ * the map; those of the rows scrolling into view are created at the end.
+ */
+
 #include "xrick/scroller.h"
 
 #include "xrick/game.h"
@@ -24,11 +30,12 @@
 /*
  * Local variables
  */
-static U8 period;
+static U8 period;  /* game period to restore when done */
 
 /*
- * Scroll up
+ * Scroll up: shift map_map up by one row, and entities with it
  *
+ * return: SCROLL_RUNNING, SCROLL_DONE
  */
 U8
 scroll_up(void)
@@ -76,7 +83,7 @@ scroll_up(void)
   map_frow++;
 
   /* loop */
-  if (n++ == 7) {
+  if (n++ == 7) {  /* last row: the hidden bottom is new */
     /* activate visible entities */
     ent_actvis(map_frow + MAP_ROW_HBTOP, map_frow + MAP_ROW_HBBOT);
 
@@ -95,8 +102,9 @@ scroll_up(void)
 }
 
 /*
- * Scroll down
+ * Scroll down: shift map_map down by one row, and entities with it
  *
+ * return: SCROLL_RUNNING, SCROLL_DONE
  */
 U8
 scroll_down(void)
@@ -144,7 +152,7 @@ scroll_down(void)
   map_frow--;
 
   /* loop */
-  if (n++ == 7) {
+  if (n++ == 7) {  /* last row: the hidden top is new */
     /* activate visible entities */
     ent_actvis(map_frow + MAP_ROW_HTTOP, map_frow + MAP_ROW_HTBOT);
 

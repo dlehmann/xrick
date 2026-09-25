@@ -13,6 +13,25 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * NOTES
+ *
+ * "Them" are the enemies and traps. There are four types:
+ *
+ *   type 1a  walks back and forth over a given distance, falls when there
+ *            is no ground
+ *   type 1b  same, but walks towards Rick
+ *   type 2   walks, falls and climbs ladders to get to Rick, choosing a
+ *            random direction every now and then
+ *   type 3   waits until triggered (by Rick, his stick, a bullet or a
+ *            bomb), then plays a scripted sequence of moves (ent_mvstep)
+ *            and sprites (ent_sprseq): traps, falling rocks, spears...
+ *
+ * Killed enemies turn into zombies, which jump and fall off the screen.
+ * Enemies kill Rick when they touch him; Rick's stick only stuns them
+ * for a moment.
+ */
+
 #include "xrick/e_them.h"
 
 #include "xrick/game.h"
@@ -29,12 +48,12 @@
 /*
  * public vars
  */
-U32 e_them_rndseed = 0;
+U32 e_them_rndseed = 0;  /* incremented every frame by game.c */
 
 /*
  * local vars
  */
-static U16 e_them_rndnbr = 0;
+static U16 e_them_rndnbr = 0;  /* last random number */
 
 /*
  * Check if entity boxtests with a lethal e_them i.e. something lethal
@@ -62,9 +81,11 @@ u_themtest(U8 e)
 
 
 /*
- * Go zombie
+ * Go zombie: the entity is killed, jumps and falls off the screen, and
+ * earns 50 points
  *
  * ASM 237B
+ * e: entity slot number
  */
 void
 e_them_gozombie(U8 e)
@@ -211,7 +232,12 @@ e_them_t1_action2(U8 e, U8 type)
 
 
 /*
+ * Action function for e_them _t1a and _t1b: move, then check what kills
+ * them, what stops them, and whether they kill rick
+ *
  * ASM 21CF
+ * e: entity slot number
+ * type: TYPE_1A or TYPE_1B
  */
 void
 e_them_t1_action(U8 e, U8 type)
@@ -275,7 +301,8 @@ e_them_t1b_action(U8 e)
 
 
 /*
- * Action function for e_them _z (zombie) type
+ * Action function for e_them _z (zombie) type: jump up, then fall with
+ * gravity until out of the screen
  *
  * ASM 23B8
  */
@@ -318,7 +345,12 @@ e_them_z_action(U8 e)
 /*
  * Action sub-function for e_them _t2.
  *
- * Must document what it does.
+ * The entity either climbs or walks. While climbing, it moves up or down
+ * towards rick's level, then horizontally towards rick, until it leaves
+ * the ladder. While not climbing, it falls if there is no ground, starts
+ * climbing when it stands on or under a ladder and rick is on another
+ * level, or else walks: it u-turns at walls and picks a random
+ * direction at some positions.
  *
  * ASM 2792
  */
@@ -346,7 +378,7 @@ e_them_t2_action2(U8 e)
 
   /*sys_printf("e_them_t2 ------------------------------\n");*/
 
-  /* latency: if not zero then decrease */
+  /* latency (stunned by rick's stick): if not zero then decrease */
   if (ent_ents[e].latency > 0) ent_ents[e].latency--;
 
   /* climbing? */
@@ -507,7 +539,8 @@ e_them_t2_action2(U8 e)
 }
 
 /*
- * Action function for e_them _t2 type
+ * Action function for e_them _t2 type: move, then check whether they
+ * kill rick, what kills them, and what stops them
  *
  * ASM 2718
  */
@@ -698,6 +731,7 @@ e_them_t3_action2(U8 e)
                  is simply missing sound (and possibly rip it)
                  or wrong data in sumbmap 47 (when making the switch explode)
                  and submap 13 (when touching jewel) */
+        /* the low bits of trigsnd select the entity sound */
         wav_index = (ent_ents[e].trigsnd & 0x1F) - 0x14;
         if((0 <= wav_index) && (wav_index < SOUNDS_NBR_ENTITIES - 1))
         {
@@ -719,7 +753,7 @@ e_them_t3_action2(U8 e)
 
 
 /*
- * Action function for e_them _t3 type
+ * Action function for e_them _t3 type: move, then kill rick if lethal
  *
  * ASM 2546
  */

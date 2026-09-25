@@ -13,6 +13,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * The stick of dynamite: it burns for a while, then explodes, killing
+ * enemies and Rick and blowing boxes up within the blast.
+ */
+
 #include "xrick/e_bomb.h"
 
 #include "xrick/game.h"
@@ -26,19 +31,20 @@
 /*
  * public vars (for performance reasons)
  */
-bool e_bomb_lethal;
-U8 e_bomb_xc;
+bool e_bomb_lethal;  /* true while exploding */
+U8 e_bomb_xc;        /* center of the explosion (pixels, map) */
 U16 e_bomb_yc;
 
 /*
  * private vars
  */
-U8 e_bomb_ticker;
+U8 e_bomb_ticker;  /* frames left, counting down */
 
 /*
  * Bomb hit test
  *
  * ASM 11CD
+ * e: entity to test against the blast
  * returns: true/hit, false/not
  */
 bool e_bomb_hit(U8 e)
@@ -56,6 +62,8 @@ bool e_bomb_hit(U8 e)
 
 /*
  * Initialize bomb
+ *
+ * x, y: position of the bomb (pixels, map)
  */
 void e_bomb_init(U16 x, U16 y)
 {
@@ -78,7 +86,7 @@ void e_bomb_init(U16 x, U16 y)
 
 
 /*
- * Entity action
+ * Entity action: tick, explode when the ticker reaches 9, and end at 0
  *
  * ASM 18CA
  */

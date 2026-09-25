@@ -11,6 +11,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Magic number at the start of every resource file, shared with the data
+ * extractor
+ */
+
 #include "xrick/resources.h"
 
 const U8 resource_magic[4] = { 0x52, 0x49, 0x43, 0x4B }; /* 'R','I','C','K' */

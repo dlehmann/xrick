@@ -11,6 +11,10 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Entity data of the original game, see dat_ents.c
+ */
+
 #ifndef _DAT_ENTS_H
 #define _DAT_ENTS_H
 

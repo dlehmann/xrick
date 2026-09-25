@@ -24,11 +24,13 @@
 
 #include <stddef.h> /* NULL */
 
+/* directions, for game_dir */
 #define LEFT 1
 #define RIGHT 0
 
-#define GAME_PERIOD 40
+#define GAME_PERIOD 40  /* default time between frames, in milliseconds */
 
+/* ammunition at the start of a map, or from a box */
 #define GAME_BOMBS_INIT 6
 #define GAME_BULLETS_INIT 6
 
@@ -49,13 +51,14 @@ extern U8 game_period;     /* time between each frame, in millisecond */
 
 extern const rect_t *game_rects; /* rectangles to redraw at each frame */
 
-extern void game_run(void);
+extern void game_run(void);  /* main loop, returns when xrick exits */
 #ifdef ENABLE_SOUND
 extern void game_setmusic(sound_t * sound, S8 loop);
 extern void game_stopmusic(void);
 #endif /* ENABLE_SOUND */
 
 #ifdef ENABLE_CHEATS
+/* cheat modes, toggled with F7, F8 and F9 */
 typedef enum
 {
     Cheat_UNLIMITED_ALL,

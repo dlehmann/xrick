@@ -22,6 +22,11 @@
  *
  ****************************************************************************/
 
+/*
+ * Rockbox plugin entry point: initialize the system, run the game, shut
+ * down
+ */
+
 #include "xrick/system/system.h"
 #include "xrick/game.h"
 

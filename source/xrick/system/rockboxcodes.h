@@ -22,6 +22,11 @@
  *
  ****************************************************************************/
 
+/*
+ * Button mappings of the Rockbox targets, for the game controls and the
+ * menu
+ */
+
 #ifndef _ROCKBOXCODES_H
 #define _ROCKBOXCODES_H
 

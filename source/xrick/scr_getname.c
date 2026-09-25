@@ -13,6 +13,12 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * Name entry for the hall of fame: after a game with a high score, the
+ * player picks the letters of the name on a 6 by 5 grid (A-Z, '.', blank,
+ * delete and end) with the pointer.
+ */
+
 #include "xrick/screens.h"
 
 #include "xrick/game.h"
@@ -26,17 +32,17 @@
 /*
  * local vars
  */
-static U8 seq = 0;
-static U8 x, y, p;
-static U8 player_name[HISCORE_NAME_SIZE];
+static U8 seq = 0;  /* step of the screen */
+static U8 x, y, p;  /* pointer column and row in the grid, name length */
+static U8 player_name[HISCORE_NAME_SIZE];  /* name entered so far */
 
 #define TILE_POINTER '\072'
 #define TILE_CURSOR '\073'
-#define TOPLEFT_X 116
+#define TOPLEFT_X 116  /* top left of the letters grid (pixels, screen) */
 #define TOPLEFT_Y 64
-#define NAMEPOS_X 120
+#define NAMEPOS_X 120  /* name entered (pixels, screen) */
 #define NAMEPOS_Y 160
-#define AUTOREPEAT_TMOUT 100
+#define AUTOREPEAT_TMOUT 100  /* pointer moves every 100 ms while held */
 
 
 /*
@@ -48,14 +54,14 @@ static void name_draw(void);
 
 
 /*
- * Get name
+ * Get name, if the score made it to the hall of fame
  *
- * return: 0 while running, 1 when finished.
+ * return: SCREEN_RUNNING, SCREEN_DONE, SCREEN_EXIT
  */
 U8
 screen_getname(void)
 {
-    static U32 tm = 0;
+    static U32 tm = 0;  /* time the pointer last moved */
     U8 i, j;
 
     if (seq == 0)
@@ -177,7 +183,7 @@ screen_getname(void)
             if (!(control_test(Control_FIRE)))
             {
                 if (x == 5 && y == 4)
-                {  /* end */
+                {  /* end: insert the score, lower ones move down */
                     i = 0;
                     while (game_score < screen_highScores[i].score) i++;
                     j = 7;
@@ -199,7 +205,7 @@ screen_getname(void)
                     seq = 99;
                 }
                 else
-                {
+                {  /* a letter, blank or delete */
                     name_update();
                     name_draw();
                     seq = 2;
@@ -250,6 +256,9 @@ screen_getname(void)
 }
 
 
+/*
+ * Draw or erase the pointer below the current grid position
+ */
 static void
 pointer_show(bool show)
 {
@@ -260,6 +269,10 @@ pointer_show(bool show)
   draw_tile(show? TILE_POINTER:'@');
 }
 
+/*
+ * Apply the grid position selected: add a letter, '.' or blank to the
+ * name, or delete the last character
+ */
 static void
 name_update(void)
 {
@@ -277,6 +290,9 @@ name_update(void)
   }
 }
 
+/*
+ * Draw the name entered so far, with cursors for the rest
+ */
 static void
 name_draw(void)
 {

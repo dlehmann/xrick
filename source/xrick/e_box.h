@@ -18,7 +18,7 @@
 
 #include "xrick/system/basic_types.h"
 
-extern void e_box_action(U8);
+extern void e_box_action(U8);  /* box of bullets or dynamite action */
 
 #endif /* ndef _E_BOX_H */
 

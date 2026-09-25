@@ -13,6 +13,11 @@
 
 #include "xrick/data/pics.h"
 
+/*
+ * Full screen pictures of the Atari ST graphics, loaded from the data
+ * archive by resources.c
+ */
+
 #ifdef GFXST
 
 #include <stddef.h> /* NULL */
@@ -20,9 +25,9 @@
 /*
  * globals
  */
-pic_t *pic_haf = NULL;
-pic_t *pic_congrats = NULL;
-pic_t *pic_splash = NULL;
+pic_t *pic_haf = NULL;       /* hall of fame title */
+pic_t *pic_congrats = NULL;  /* congratulations, on the name entry screen */
+pic_t *pic_splash = NULL;    /* Rick Dangerous title screen */
 
 #endif /* GFXST */
 

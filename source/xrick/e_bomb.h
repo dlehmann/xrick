@@ -18,17 +18,20 @@
 
 #include "xrick/system/basic_types.h"
 
+/*
+ * The stick of dynamite laid by Rick: it always uses entity slot 3
+ */
 #define E_BOMB_NO 3
 #define E_BOMB_ENT ent_ents[E_BOMB_NO]
-#define E_BOMB_TICKER (0x2D)
+#define E_BOMB_TICKER (0x2D)  /* frames from laying to the end of the blast */
 
-extern bool e_bomb_lethal;
-extern U8 e_bomb_ticker;
-extern U8 e_bomb_xc;
+extern bool e_bomb_lethal;  /* true while exploding */
+extern U8 e_bomb_ticker;    /* frames left, counting down */
+extern U8 e_bomb_xc;        /* center of the explosion (pixels, map) */
 extern U16 e_bomb_yc;
 
-extern bool e_bomb_hit(U8);
-extern void e_bomb_init(U16, U16);
+extern bool e_bomb_hit(U8);  /* is entity e within the blast? */
+extern void e_bomb_init(U16, U16);  /* lay a bomb at x, y */
 extern void e_bomb_action(U8);
 
 #endif /* ndef _E_BOMB_H */

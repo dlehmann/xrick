@@ -11,6 +11,11 @@
  * You must not remove this notice, or any other, from this software.
  */
 
+/*
+ * External definitions of the inline byte order functions of
+ * basic_funcs.h
+ */
+
 #include "xrick/system/basic_funcs.h"
 
 #ifdef USE_DEFAULT_ENDIANNESS_FUNCTIONS

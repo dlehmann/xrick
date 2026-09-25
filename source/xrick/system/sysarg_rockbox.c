@@ -22,6 +22,11 @@
  *
  ****************************************************************************/
 
+/*
+ * Arguments, Rockbox version: the plugin gets the data directory from
+ * the file it is started with
+ */
+
 #include "xrick/system/system.h"
 
 /*

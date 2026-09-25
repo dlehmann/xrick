@@ -18,12 +18,15 @@
  *
  * A sprite consists in 4 columns and 21 rows of (U16 mask, U16 pict),
  * each pair representing 8 pixels (cga encoding, two bits per pixels).
- * Sprites are stored in 'sprites.bin' and are loaded by spr_init. Memory
- * is freed by spr_shutdown.
+ * draw_sprite2 shifts them to any pixel position while drawing.
  *
- * There are four sprites planes. Plane 0 is the raw content of 'sprites.bin',
- * and planes 1, 2 and 3 contain copies of plane 0 with all sprites shifted
- * 2, 4 and 6 pixels to the right.
+ * NOTES -- ST version
+ *
+ * A sprite consists in 4 columns and 21 rows of U32, each representing
+ * 8 pixels of 4 bits (indexes in the game palette); color 0 is
+ * transparent.
+ *
+ * Sprites are loaded from the data archive by resources.c.
  */
 
 #ifndef _SPRITES_H_
@@ -37,9 +40,10 @@
 
 #ifdef GFXPC
 
+/* 8 pixels of a sprite */
 typedef struct {
-  U16 mask;
-  U16 pict;
+  U16 mask;  /* bits of the background to keep */
+  U16 pict;  /* bits of the sprite to draw over it */
 } spriteX_t;
 
 enum {
@@ -62,8 +66,8 @@ typedef U32 sprite_t[SPRITES_NBR_DATA];
 
 #endif /* GFXST */
 
-extern size_t sprites_nbr_sprites;
-extern sprite_t *sprites_data;
+extern size_t sprites_nbr_sprites;  /* number of sprites in sprites_data */
+extern sprite_t *sprites_data;      /* all sprites */
 
 #endif /* ndef _SPRITES_H_ */
 
