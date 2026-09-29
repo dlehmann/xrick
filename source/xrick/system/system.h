@@ -28,10 +28,11 @@
  */
 #ifdef __GNUC__
 /*
- * make POSIX functions available
+ * make POSIX functions available; POSIX.1-2001 and not the older
+ * _POSIX_SOURCE, which hides C99 functions like vsnprintf() on macOS
  */
-#  ifndef _POSIX_SOURCE
-#    define _POSIX_SOURCE
+#  ifndef _POSIX_C_SOURCE
+#    define _POSIX_C_SOURCE 200112L
 #  endif
 #endif
 
