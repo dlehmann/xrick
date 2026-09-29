@@ -1,26 +1,45 @@
 #!/bin/sh
 #
-# Builds an AppImage of xrick in an Ubuntu 22.04 container, so that it
-# runs on distributions with glibc 2.35 or newer. Called by the release
-# workflow; run it from the repository root:
+# Builds an AppImage of xrick in two steps, called by the release
+# workflow from the repository root:
 #
 #   docker run --rm -v "$PWD:/src" -w /src ubuntu:22.04 \
-#       sh .github/scripts/linux-appimage.sh <version> <arch>
+#       sh .github/scripts/linux-appimage.sh build <version> <arch>
+#   sh .github/scripts/linux-appimage.sh package <version> <arch>
 #
-# <arch> is x86_64, aarch64 or armhf. SDL 1.2 comes from sdl12-compat on
+# "build" compiles xrick in an Ubuntu 22.04 container, so that it runs on
+# distributions with glibc 2.35 or newer, and fills dist/AppDir-<arch>.
+# "package" turns that into the AppImage, outside the container: the
+# appimagetool for ARM can not run under QEMU, the one for the machine
+# can pack for any architecture. <arch> is x86_64, aarch64 or armhf. SDL 1.2 comes from sdl12-compat on
 # top of SDL 2; both go into the AppImage. SDL 2 loads X11, Wayland, KMSDRM
 # and PipeWire, PulseAudio or ALSA from the system at runtime. The result
 # is dist/xrick-<version>-<arch>.AppImage.
 #
 set -eu
 
-VERSION=${1:?version missing}
-ARCH=${2:?arch missing}
+STEP=${1:?step missing}
+VERSION=${2:?version missing}
+ARCH=${3:?arch missing}
 
 SDL2_TAG=release-2.32.10
 SDL12COMPAT_TAG=release-1.2.76
 
 SRC=$(pwd)
+APPDIR="$SRC/dist/AppDir-$ARCH"
+
+if [ "$STEP" = package ]; then
+    TOOL="$SRC/dist/appimagetool"
+    curl -fsSL -o "$TOOL" \
+        "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$(uname -m).AppImage"
+    chmod +x "$TOOL"
+    # appimagetool is itself an AppImage, run it without FUSE
+    ARCH="$ARCH" APPIMAGE_EXTRACT_AND_RUN=1 "$TOOL" --no-appstream \
+        "$APPDIR" "dist/xrick-$VERSION-$ARCH.AppImage"
+    rm -rf "$TOOL" "$APPDIR"
+    exit 0
+fi
+[ "$STEP" = build ] || { echo "unknown step $STEP" >&2; exit 1; }
 WORK=/tmp/xrick-deps
 PREFIX=/opt/sdl
 JOBS=$(nproc)
@@ -62,7 +81,6 @@ cmake --build build-release -j"$JOBS"
 strip build-release/xrick
 
 # AppDir
-APPDIR="$WORK/AppDir"
 rm -rf "$APPDIR"
 mkdir -p "$APPDIR/usr/bin" "$APPDIR/usr/lib" "$APPDIR/usr/share/xrick"
 cp build-release/xrick "$APPDIR/usr/bin/"
@@ -104,10 +122,5 @@ for f in "$APPDIR/usr/bin/xrick" "$APPDIR"/usr/lib/*.so.*; do
     echo "$f:"; readelf -d "$f" | grep NEEDED || true
 done
 
-# appimagetool is itself an AppImage, run it without FUSE
-curl -fsSL -o "$WORK/appimagetool" \
-    "https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$ARCH.AppImage"
-chmod +x "$WORK/appimagetool"
-mkdir -p dist
-ARCH="$ARCH" APPIMAGE_EXTRACT_AND_RUN=1 "$WORK/appimagetool" --no-appstream \
-    "$APPDIR" "dist/xrick-$VERSION-$ARCH.AppImage"
+# hand the results to the user outside the container
+chown -R "$(stat -c %u:%g "$SRC")" "$SRC/dist" "$SRC/build-release"

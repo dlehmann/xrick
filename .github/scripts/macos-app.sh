@@ -6,10 +6,9 @@
 #
 #   sh .github/scripts/macos-app.sh <version>
 #
-# SDL 1.2 does not run on current macOS, so sdl12-compat is linked in
-# statically. It loads SDL 2 at runtime, whose library goes into the app
-# bundle next to the binary. The result is
-# dist/xrick-<version>-macos-universal.zip.
+# SDL 1.2 does not run on current macOS, so it comes from sdl12-compat,
+# which loads SDL 2 at runtime. Both libraries go into the app bundle next
+# to the binary. The result is dist/xrick-<version>-macos-universal.zip.
 #
 set -eu
 
@@ -40,16 +39,14 @@ cmake -S "SDL-$SDL2_TAG" -B sdl2-build -DCMAKE_BUILD_TYPE=Release \
 cmake --build sdl2-build -j"$JOBS"
 cmake --install sdl2-build
 
-# sdl12-compat, as a static library
+# sdl12-compat
 curl -fsSL "https://github.com/libsdl-org/sdl12-compat/archive/refs/tags/$SDL12COMPAT_TAG.tar.gz" | tar xz
 cmake -S "sdl12-compat-$SDL12COMPAT_TAG" -B sdl12-build -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_OSX_ARCHITECTURES="$ARCHS" -DCMAKE_INSTALL_PREFIX="$PREFIX" \
     -DCMAKE_PREFIX_PATH="$PREFIX" -DCMAKE_IGNORE_PREFIX_PATH="$IGNORE" \
-    -DSDL12TESTS=OFF -DSDL12DEVEL=ON -DSTATICDEVEL=ON
+    -DSDL12TESTS=OFF -DSDL12DEVEL=ON
 cmake --build sdl12-build -j"$JOBS"
 cmake --install sdl12-build
-# make FindSDL pick the static library
-rm -f "$PREFIX"/lib/libSDL-*.dylib "$PREFIX"/lib/libSDL.dylib
 cd "$SRC"
 
 # xrick
@@ -66,8 +63,19 @@ otool -L build-release/xrick.app/Contents/MacOS/xrick
 APP=dist/xrick.app
 rm -rf dist
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-cp build-release/xrick.app/Contents/MacOS/xrick "$APP/Contents/MacOS/xrick-bin"
-cp "$PREFIX/lib/libSDL2-2.0.0.dylib" "$APP/Contents/MacOS/"
+BIN="$APP/Contents/MacOS/xrick-bin"
+cp build-release/xrick.app/Contents/MacOS/xrick "$BIN"
+cp -L "$PREFIX/lib/libSDL-1.2.0.dylib" "$PREFIX/lib/libSDL2-2.0.0.dylib" "$APP/Contents/MacOS/"
+chmod u+w "$APP"/Contents/MacOS/*.dylib
+# load sdl12-compat from the bundle; it finds SDL 2 next to itself
+install_name_tool -id @executable_path/libSDL-1.2.0.dylib "$APP/Contents/MacOS/libSDL-1.2.0.dylib"
+SDL12_REF=$(otool -L "$BIN" | awk '/libSDL[-.]/ { print $1; exit }')
+install_name_tool -change "$SDL12_REF" @executable_path/libSDL-1.2.0.dylib "$BIN"
+otool -L "$BIN"
+if otool -L "$BIN" | grep -q "$PREFIX"; then
+    echo "xrick-bin still refers to $PREFIX" >&2
+    exit 1
+fi
 cp game/data.zip "$APP/Contents/Resources/"
 cp -R game/lang "$APP/Contents/Resources/"
 sips -s format icns assets/images/xrickST.ico --out "$APP/Contents/Resources/xrick.icns" \
@@ -108,7 +116,8 @@ EOT
 
 # ad-hoc signature, Apple Silicon does not start unsigned code
 codesign --force --sign - "$APP/Contents/MacOS/libSDL2-2.0.0.dylib"
-codesign --force --sign - "$APP/Contents/MacOS/xrick-bin"
+codesign --force --sign - "$APP/Contents/MacOS/libSDL-1.2.0.dylib"
+codesign --force --sign - "$BIN"
 codesign --force --sign - "$APP"
 codesign --verify --verbose "$APP"
 

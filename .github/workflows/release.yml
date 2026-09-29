@@ -44,7 +44,9 @@ jobs:
         run: |
           docker run --rm --platform ${{ matrix.platform }} \
             -v "$PWD:/src" -w /src ubuntu:22.04 \
-            sh .github/scripts/linux-appimage.sh "${GITHUB_REF_NAME#v}" ${{ matrix.arch }}
+            sh .github/scripts/linux-appimage.sh build "${GITHUB_REF_NAME#v}" ${{ matrix.arch }}
+      - name: Package AppImage
+        run: sh .github/scripts/linux-appimage.sh package "${GITHUB_REF_NAME#v}" ${{ matrix.arch }}
       - uses: actions/upload-artifact@v4
         with:
           name: linux-${{ matrix.arch }}
