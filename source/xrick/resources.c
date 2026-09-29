@@ -1004,7 +1004,7 @@ static bool checkCrc32(const unsigned id)
 
         calculatedCrc32 = mz_crc32(calculatedCrc32, tempBuffer, bytesRead);
 
-        memcpy(tempBuffer, tempBuffer + bytesRead, sizeof(U32));
+        memmove(tempBuffer, tempBuffer + bytesRead, sizeof(U32));
     } while (bytesRead == sizeof(tempBuffer) - sizeof(U32));
 
     sysfile_close(fp);
