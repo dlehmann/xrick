@@ -1,0 +1,130 @@
+# Builds xrick for Windows, Linux (AppImages for PC and Raspberry Pi) and macOS when a
+# version tag like v1.0.0 (or v1.0.0-rc1 for a pre-release) is pushed, and
+# publishes the builds as a GitHub release.
+name: Release
+
+on:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-*"
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    name: AppImage ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # normal PC
+          - arch: x86_64
+            runner: ubuntu-24.04
+            platform: linux/amd64
+          # Raspberry Pi 3/4/5 with a 64 bit OS
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+            platform: linux/arm64
+          # Raspberry Pi 2/3/4/5 with a 32 bit OS; the ARM runners can not
+          # run 32 bit code, so emulate it
+          - arch: armhf
+            runner: ubuntu-24.04
+            platform: linux/arm/v7
+            qemu: true
+    steps:
+      - uses: actions/checkout@v5
+      - if: matrix.qemu
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm
+      - name: Build AppImage
+        run: |
+          docker run --rm --platform ${{ matrix.platform }} \
+            -v "$PWD:/src" -w /src ubuntu:22.04 \
+            sh .github/scripts/linux-appimage.sh "${GITHUB_REF_NAME#v}" ${{ matrix.arch }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-${{ matrix.arch }}
+          path: dist/*.AppImage
+          if-no-files-found: error
+
+  windows:
+    name: Windows x86_64
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: Cross-compile static exe
+        run: |
+          docker run --rm -v "$PWD:/src" -w /src debian:trixie \
+            sh .github/scripts/windows-static.sh "${GITHUB_REF_NAME#v}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-x86_64
+          path: dist/*
+          if-no-files-found: error
+
+  macos:
+    name: macOS universal
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v5
+      - name: Build app bundle
+        run: sh .github/scripts/macos-app.sh "${GITHUB_REF_NAME#v}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-universal
+          path: dist/*.zip
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    needs: [linux, windows, macos]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Checksums
+        run: cd dist && sha256sum * > SHA256SUMS.txt && cat SHA256SUMS.txt
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          PRERELEASE=
+          case "$VERSION" in *-*) PRERELEASE=--prerelease ;; esac
+          cat > notes.md <<'EOF'
+          ## Downloads
+
+          | File | For |
+          |------|-----|
+          | `xrick-*-windows-x86_64.zip` | Windows 10/11, 64 bit |
+          | `xrick-*-x86_64.AppImage` | Linux PC, 64 bit |
+          | `xrick-*-aarch64.AppImage` | Raspberry Pi 3/4/5 with 64 bit Raspberry Pi OS |
+          | `xrick-*-armhf.AppImage` | Raspberry Pi 2/3/4/5 with 32 bit Raspberry Pi OS |
+          | `xrick-*-macos-universal.zip` | macOS 11 or newer, Apple Silicon and Intel |
+
+          Windows: unpack the archive and start `xrick.exe`, it needs no
+          further files besides the game data next to it.
+
+          Linux: make the AppImage executable (`chmod +x xrick-*.AppImage`)
+          and start it. It needs glibc 2.35 or newer (Ubuntu 22.04, Debian 12,
+          Raspberry Pi OS Bookworm). The game data and high scores are kept in
+          `~/.local/share/xrick`.
+
+          The macOS app is not notarized. On the first start, open it with a
+          right click and "Open", or allow it under System Settings > Privacy &
+          Security. The high scores are kept in
+          `~/Library/Application Support/xrick`.
+
+          EOF
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --verify-tag --title "xrick $VERSION" \
+            --notes-file notes.md --generate-notes $PRERELEASE
